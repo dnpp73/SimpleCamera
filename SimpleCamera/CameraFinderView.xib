@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CameraFinderView" customModule="SimpleCamera" customModuleProvider="target">
+            <connections>
+                <outlet property="captureVideoPreviewView" destination="eGx-L7-H8B" id="41C-pb-Eyv"/>
+                <outlet property="captureVideoPreviewViewPinchGestureRecognizer" destination="WTd-lc-XUc" id="4GH-u1-gxC"/>
+                <outlet property="captureVideoPreviewViewTapGestureRecognizer" destination="1cr-II-rGo" id="wi1-d1-drd"/>
+                <outlet property="contentView" destination="NfA-T6-KRp" id="t9i-fQ-Ykl"/>
+                <outlet property="exposureIndicatorView" destination="TQX-Vr-vFI" id="YUL-jr-RMs"/>
+                <outlet property="focusIndicatorView" destination="f2X-jh-FF4" id="PRF-ML-sxk"/>
+                <outlet property="gridView" destination="U59-2w-aZm" id="gQo-e2-rS5"/>
+                <outlet property="shutterAnimationView" destination="TOe-Jm-x80" id="Czp-vn-KbS"/>
+                <outlet property="zoomIndicatorButton" destination="QXA-xc-0Qz" id="Yh9-FL-1vJ"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clipsSubviews="YES" contentMode="scaleAspectFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGx-L7-H8B" customClass="AVCaptureVideoPreviewView" customModule="SimpleCamera">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <gestureRecognizers/>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="1cr-II-rGo" appends="YES" id="TfE-2F-ntZ"/>
+                        <outletCollection property="gestureRecognizers" destination="WTd-lc-XUc" appends="YES" id="JWQ-WR-Zei"/>
+                    </connections>
+                </view>
+                <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NfA-T6-KRp">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
+                <view userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="f2X-jh-FF4" customClass="FocusIndicatorView" customModule="SimpleCamera" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                    <subviews>
+                        <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pf2-XN-Nwa" customClass="CircleIndicatorView" customModule="SimpleCamera" customModuleProvider="target">
+                            <rect key="frame" x="180" y="260" width="120" height="120"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="indicatorView" destination="Pf2-XN-Nwa" id="inD-5l-9bW"/>
+                    </connections>
+                </view>
+                <view userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="TQX-Vr-vFI" customClass="ExposureIndicatorView" customModule="SimpleCamera" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                    <subviews>
+                        <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Uq-cY-Jkj" customClass="SquareIndicatorView" customModule="SimpleCamera" customModuleProvider="target">
+                            <rect key="frame" x="180" y="260" width="120" height="120"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="indicatorView" destination="3Uq-cY-Jkj" id="kgh-Br-Eso"/>
+                    </connections>
+                </view>
+                <view userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="U59-2w-aZm" userLabel="Grid View" customClass="GridView" customModule="SimpleCamera" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QXA-xc-0Qz" customClass="ZoomIndicatorButton" customModule="SimpleCamera" customModuleProvider="target">
+                    <rect key="frame" x="222" y="584" width="36" height="36"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="QXA-xc-0Qz" secondAttribute="height" multiplier="1:1" id="JGU-uT-iYz"/>
+                        <constraint firstAttribute="width" constant="36" id="jbv-dn-MAA"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="1.5"/>
+                    <state key="normal" title="10x"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="18"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" white="1" alpha="0.70285560344827591" colorSpace="calibratedWhite"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
+                            <color key="value" white="0.25" alpha="0.33324535472972971" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="highlightedBackgroundColor">
+                            <color key="value" white="0.25" alpha="0.5" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="touchUpInsideZoomIndicatorButton:" destination="-1" eventType="touchUpInside" id="Krp-KK-Rpk"/>
+                    </connections>
+                </button>
+                <view userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="TOe-Jm-x80" customClass="ShutterAnimationView" customModule="SimpleCamera" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="QXA-xc-0Qz" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="7Zs-Fp-uZe"/>
+                <constraint firstItem="TQX-Vr-vFI" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="7dD-QS-EmC"/>
+                <constraint firstAttribute="bottom" secondItem="U59-2w-aZm" secondAttribute="bottom" placeholder="YES" id="7tb-a8-Eay"/>
+                <constraint firstAttribute="bottom" secondItem="eGx-L7-H8B" secondAttribute="bottom" id="DeI-cL-lPO"/>
+                <constraint firstItem="NfA-T6-KRp" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Dr5-Js-SyI"/>
+                <constraint firstItem="eGx-L7-H8B" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="H9e-o8-hHH"/>
+                <constraint firstItem="eGx-L7-H8B" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="J0n-02-2P7"/>
+                <constraint firstAttribute="bottom" secondItem="NfA-T6-KRp" secondAttribute="bottom" id="K4S-29-mJD"/>
+                <constraint firstItem="NfA-T6-KRp" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="KtT-Dj-24d"/>
+                <constraint firstItem="f2X-jh-FF4" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="MSr-Yb-3tM"/>
+                <constraint firstItem="TOe-Jm-x80" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ZfT-aF-V3O"/>
+                <constraint firstAttribute="trailing" secondItem="eGx-L7-H8B" secondAttribute="trailing" id="Zk2-eY-fny"/>
+                <constraint firstAttribute="bottom" secondItem="TQX-Vr-vFI" secondAttribute="bottom" id="aHy-C6-7z5"/>
+                <constraint firstAttribute="trailing" secondItem="U59-2w-aZm" secondAttribute="trailing" placeholder="YES" id="fGF-tF-O9P"/>
+                <constraint firstAttribute="trailing" secondItem="NfA-T6-KRp" secondAttribute="trailing" id="iIH-om-kBF"/>
+                <constraint firstAttribute="bottom" secondItem="f2X-jh-FF4" secondAttribute="bottom" id="iWw-ma-fn8"/>
+                <constraint firstItem="U59-2w-aZm" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" placeholder="YES" id="k2M-Qv-B9Q"/>
+                <constraint firstAttribute="bottom" secondItem="QXA-xc-0Qz" secondAttribute="bottom" constant="20" id="l7z-KR-IVw"/>
+                <constraint firstAttribute="trailing" secondItem="TQX-Vr-vFI" secondAttribute="trailing" id="qU5-tz-UG2"/>
+                <constraint firstAttribute="bottom" secondItem="TOe-Jm-x80" secondAttribute="bottom" id="sPi-M2-7aj"/>
+                <constraint firstItem="U59-2w-aZm" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" placeholder="YES" id="tIF-4k-PP7"/>
+                <constraint firstItem="f2X-jh-FF4" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="taG-B9-pDu"/>
+                <constraint firstAttribute="trailing" secondItem="TOe-Jm-x80" secondAttribute="trailing" id="v1f-GB-ZgE"/>
+                <constraint firstItem="TOe-Jm-x80" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="wFI-Ma-cNa"/>
+                <constraint firstItem="TQX-Vr-vFI" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="xNM-Wp-YCo"/>
+                <constraint firstAttribute="trailing" secondItem="f2X-jh-FF4" secondAttribute="trailing" id="ydQ-Gw-JFP"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+        </view>
+        <tapGestureRecognizer id="1cr-II-rGo">
+            <connections>
+                <action selector="handleFocusAndExposeTapGestureRecognizer:" destination="-1" id="AwE-pX-lvu"/>
+                <outlet property="delegate" destination="-1" id="nvR-s6-TpF"/>
+            </connections>
+        </tapGestureRecognizer>
+        <pinchGestureRecognizer id="WTd-lc-XUc">
+            <connections>
+                <action selector="handleZoomPinchGestureRecognizer:" destination="-1" id="ar9-7L-oVt"/>
+                <outlet property="delegate" destination="-1" id="8gD-LN-m0y"/>
+            </connections>
+        </pinchGestureRecognizer>
+    </objects>
+</document>
