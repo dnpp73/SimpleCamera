@@ -121,7 +121,20 @@ internal final class ZoomIndicatorButton: UIButton {
     
 }
 
+import AVFoundation
+
 extension ZoomIndicatorButton: SimpleCameraObservable {
+    func simpleCameraDidStartRunning(simpleCamera: SimpleCamera) {}
+    func simpleCameraDidStopRunning(simpleCamera: SimpleCamera) {}
+    func simpleCameraDidChangeFocusPointOfInterest(simpleCamera: SimpleCamera) {}
+    func simpleCameraDidChangeExposurePointOfInterest(simpleCamera: SimpleCamera) {}
+    func simpleCameraDidResetFocusAndExposure(simpleCamera: SimpleCamera) {}
+    func simpleCameraDidSwitchCameraInput(simpleCamera: SimpleCamera) {}
+//    func simpleCameraSessionRuntimeError(simpleCamera: SimpleCamera, error: AVError) {}
+//    @available(iOS 9.0, *)
+//    func simpleCameraSessionWasInterrupted(simpleCamera: SimpleCamera, reason: AVCaptureSession.InterruptionReason) {}
+    func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera) {}
+    
     internal func simpleCameraDidChangeZoomFactor(simpleCamera: SimpleCamera) {
         updateTitleForCurrentZoomFactor()
     }

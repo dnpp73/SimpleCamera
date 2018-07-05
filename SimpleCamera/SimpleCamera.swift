@@ -499,7 +499,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             device.isSubjectAreaChangeMonitoringEnabled = true
             onMainThread {
                 for observer in self.observers.allObjects {
-                    observer.simpleCameraDidResetFocusAndExposure?(simpleCamera: self)
+                    observer.simpleCameraDidResetFocusAndExposure(simpleCamera: self)
                 }
             }
         }
@@ -545,7 +545,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // 内部で sessionQueue.async してるので外に出しておきたい
             onMainThread {
                 for observer in self.observers.allObjects {
-                    observer.simpleCameraDidSwitchCameraInput?(simpleCamera: self)
+                    observer.simpleCameraDidSwitchCameraInput(simpleCamera: self)
                 }
             }
             resetFocusAndExposure()
@@ -953,7 +953,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         let error = AVError(_nsError: errorValue)
         onMainThread {
             for observer in self.observers.allObjects {
-                observer.simpleCameraSessionRuntimeError?(simpleCamera: self, error: error)
+                observer.simpleCameraSessionRuntimeError(simpleCamera: self, error: error)
             }
         }
          */
@@ -965,12 +965,12 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         guard #available(iOS 9.0, *) else {
             return
         }
-        guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?, let reasonIntegerValue = userInfoValue.integerValue, let reason = AVCaptureSessionInterruptionReason(rawValue: reasonIntegerValue) else {
+        guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?, let reasonIntegerValue = userInfoValue.integerValue, let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue) else {
             return
         }
         onMainThread {
             for observer in self.observers.allObjects {
-                observer.simpleCameraSessionWasInterrupted?(simpleCamera: self, reason: reason)
+                observer.simpleCameraSessionWasInterrupted(simpleCamera: self, reason: reason)
             }
         }
          */
@@ -979,7 +979,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     @objc private func sessionInterruptionEnded(notification: Notification) {
         onMainThread {
             for observer in self.observers.allObjects {
-                observer.simpleCameraSessionInterruptionEnded?(simpleCamera: self)
+                observer.simpleCameraSessionInterruptionEnded(simpleCamera: self)
             }
         }
     }
@@ -995,9 +995,9 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             if shouldSendIsRunningDidChange {
                 for observer in observers.allObjects {
                     if isRunning {
-                        observer.simpleCameraDidStartRunning?(simpleCamera: self)
+                        observer.simpleCameraDidStartRunning(simpleCamera: self)
                     } else {
-                        observer.simpleCameraDidStopRunning?(simpleCamera: self)
+                        observer.simpleCameraDidStopRunning(simpleCamera: self)
                     }
                 }
             }
@@ -1012,7 +1012,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         didSet {
             if shouldSendZoomFactorDidChange {
                 for observer in observers.allObjects {
-                    observer.simpleCameraDidChangeZoomFactor?(simpleCamera: self)
+                    observer.simpleCameraDidChangeZoomFactor(simpleCamera: self)
                 }
             }
         }
@@ -1026,7 +1026,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         didSet {
             if shouldSendFocusPointOfInterestDidChange {
                 for observer in observers.allObjects {
-                    observer.simpleCameraDidChangeFocusPointOfInterest?(simpleCamera: self)
+                    observer.simpleCameraDidChangeFocusPointOfInterest(simpleCamera: self)
                 }
             }
         }
@@ -1040,7 +1040,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         didSet {
             if shouldSendExposurePointOfInterestDidChange {
                 for observer in observers.allObjects {
-                    observer.simpleCameraDidChangeExposurePointOfInterest?(simpleCamera: self)
+                    observer.simpleCameraDidChangeExposurePointOfInterest(simpleCamera: self)
                 }
             }
         }
@@ -1090,13 +1090,13 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
             
             // videoOutputObservers
             for observer in videoOutputObservers.allObjects {
-                observer.simpleCameraVideoOutputObserve?(captureOutput: output, didOutput: sampleBuffer, from: connection)
+                observer.simpleCameraVideoOutputObserve(captureOutput: output, didOutput: sampleBuffer, from: connection)
             }
         }
         else if output == audioOutput {
             // audioOutputObservers
             for observer in audioOutputObservers.allObjects {
-                observer.simpleCameraAudioOutputObserve?(captureOutput: output, didOutput: sampleBuffer, from: connection)
+                observer.simpleCameraAudioOutputObserve(captureOutput: output, didOutput: sampleBuffer, from: connection)
             }
         }
     }
@@ -1104,7 +1104,7 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
     public func captureOutput(_ captureOutput: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard captureOutput == videoOutput else { return }
         for observer in videoOutputObservers.allObjects {
-            observer.simpleCameraVideoOutputObserve?(captureOutput: captureOutput, didDrop: sampleBuffer, from: connection)
+            observer.simpleCameraVideoOutputObserve(captureOutput: captureOutput, didDrop: sampleBuffer, from: connection)
         }
     }
     

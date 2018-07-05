@@ -2,33 +2,31 @@ import Foundation
 import UIKit
 import AVFoundation
 
-// NSHashTable がまだ NS 取れてなかったので @objc 属性が必要だった。
-
 @objc public protocol SimpleCameraObservable: class {
-    @objc optional func simpleCameraDidStartRunning(simpleCamera: SimpleCamera)
-    @objc optional func simpleCameraDidStopRunning(simpleCamera: SimpleCamera)
+    func simpleCameraDidStartRunning(simpleCamera: SimpleCamera)
+    func simpleCameraDidStopRunning(simpleCamera: SimpleCamera)
     
-    @objc optional func simpleCameraDidChangeZoomFactor(simpleCamera: SimpleCamera)
+    func simpleCameraDidChangeZoomFactor(simpleCamera: SimpleCamera)
     
-    @objc optional func simpleCameraDidChangeFocusPointOfInterest(simpleCamera: SimpleCamera)
-    @objc optional func simpleCameraDidChangeExposurePointOfInterest(simpleCamera: SimpleCamera)
-    @objc optional func simpleCameraDidResetFocusAndExposure(simpleCamera: SimpleCamera)
+    func simpleCameraDidChangeFocusPointOfInterest(simpleCamera: SimpleCamera)
+    func simpleCameraDidChangeExposurePointOfInterest(simpleCamera: SimpleCamera)
+    func simpleCameraDidResetFocusAndExposure(simpleCamera: SimpleCamera)
     
-    @objc optional func simpleCameraDidSwitchCameraInput(simpleCamera: SimpleCamera)
+    func simpleCameraDidSwitchCameraInput(simpleCamera: SimpleCamera)
     
     // TODO
-//    @objc optional func simpleCameraSessionRuntimeError(simpleCamera: SimpleCamera, error: AVError)
-//    @available(iOS 9.0, *) @objc optional func simpleCameraSessionWasInterrupted(simpleCamera: SimpleCamera, reason: AVCaptureSession.InterruptionReason)
-    @objc optional func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera)
+//    func simpleCameraSessionRuntimeError(simpleCamera: SimpleCamera, error: AVError)
+//    @available(iOS 9.0, *) func simpleCameraSessionWasInterrupted(simpleCamera: SimpleCamera, reason: AVCaptureSession.InterruptionReason)
+    func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera)
 }
 
 @objc public protocol SimpleCameraVideoOutputObservable: class {
-    @objc optional func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
-    @objc optional func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didDrop   sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+    func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+    func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didDrop   sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
 @objc public protocol SimpleCameraAudioOutputObservable: class {
-    @objc optional func simpleCameraAudioOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+    func simpleCameraAudioOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
 public enum CameraMode {

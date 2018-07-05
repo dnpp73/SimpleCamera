@@ -307,6 +307,13 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
 extension CameraFinderView: SimpleCameraObservable {
     
+    public func simpleCameraDidStopRunning(simpleCamera: SimpleCamera) {}
+    public func simpleCameraDidChangeZoomFactor(simpleCamera: SimpleCamera) {}
+//    public func simpleCameraSessionRuntimeError(simpleCamera: SimpleCamera, error: AVError) {}
+//    @available(iOS 9.0, *)
+//    public func simpleCameraSessionWasInterrupted(simpleCamera: SimpleCamera, reason: AVCaptureSession.InterruptionReason) {}
+    public func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera) {}
+    
     public func simpleCameraDidStartRunning(simpleCamera: SimpleCamera) {
         updateZoomIndicatorButtonHidden()
     }
