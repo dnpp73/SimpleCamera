@@ -15,19 +15,20 @@ import AVFoundation
     @objc optional func simpleCameraDidResetFocusAndExposure(simpleCamera: SimpleCamera)
     
     @objc optional func simpleCameraDidSwitchCameraInput(simpleCamera: SimpleCamera)
-
-    @objc optional func simpleCameraSessionRuntimeError(simpleCamera: SimpleCamera, error: AVError)
-    @available(iOS 9.0, *) @objc optional func simpleCameraSessionWasInterrupted(simpleCamera: SimpleCamera, reason: AVCaptureSessionInterruptionReason)
+    
+    // TODO
+//    @objc optional func simpleCameraSessionRuntimeError(simpleCamera: SimpleCamera, error: AVError)
+//    @available(iOS 9.0, *) @objc optional func simpleCameraSessionWasInterrupted(simpleCamera: SimpleCamera, reason: AVCaptureSession.InterruptionReason)
     @objc optional func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera)
 }
 
 @objc public protocol SimpleCameraVideoOutputObservable: class {
-    @objc optional func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
-    @objc optional func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+    @objc optional func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+    @objc optional func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didDrop   sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
 @objc public protocol SimpleCameraAudioOutputObservable: class {
-    @objc optional func simpleCameraAudioOutputObserve(captureOutput: AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+    @objc optional func simpleCameraAudioOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
 public enum CameraMode {
@@ -42,7 +43,7 @@ public protocol SimpleCameraInterface: class {
     static var shared: SimpleCamera { get }
     
     // AVCaptureVideoPreviewView Setting
-    func setSessionTo(captureVideoPreviewView: AVCaptureVideoPreviewView)
+    func setSession(to captureVideoPreviewView: AVCaptureVideoPreviewView)
     
     // Camera Session Control
     var isRunning: Bool { get }
@@ -73,12 +74,12 @@ public protocol SimpleCameraInterface: class {
     
     // Focus, Exposure
     var focusPointOfInterest: CGPoint { get }
-    func focus(at devicePoint: CGPoint, focusMode: AVCaptureFocusMode, monitorSubjectAreaChange: Bool)
+    func focus(at devicePoint: CGPoint, focusMode: AVCaptureDevice.FocusMode, monitorSubjectAreaChange: Bool)
     
     var exposurePointOfInterest: CGPoint { get }
-    func exposure(at devicePoint: CGPoint, exposureMode: AVCaptureExposureMode, monitorSubjectAreaChange: Bool)
+    func exposure(at devicePoint: CGPoint, exposureMode: AVCaptureDevice.ExposureMode, monitorSubjectAreaChange: Bool)
     
-    func focusAndExposure(at devicePoint: CGPoint, focusMode: AVCaptureFocusMode, exposureMode: AVCaptureExposureMode, monitorSubjectAreaChange: Bool)
+    func focusAndExposure(at devicePoint: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, monitorSubjectAreaChange: Bool)
     func resetFocusAndExposure()
     
     // Front or Back

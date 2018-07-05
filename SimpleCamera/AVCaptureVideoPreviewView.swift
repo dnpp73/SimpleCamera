@@ -17,7 +17,7 @@ public final class AVCaptureVideoPreviewView: UIView {
     
     // MARK:- AVCaptureVideoPreviewLayer Property Bridge
     
-    public var videoGravity: String? {
+    public var videoGravity: AVLayerVideoGravity {
         get {
             return captureVideoPreviewLayer.videoGravity
         }
@@ -52,12 +52,12 @@ public final class AVCaptureVideoPreviewView: UIView {
                 CATransaction.commit()
             }
             switch contentMode {
-            case .scaleToFill:     videoGravity = AVLayerVideoGravityResize
-            case .scaleAspectFit:  videoGravity = AVLayerVideoGravityResizeAspect
-            case .scaleAspectFill: videoGravity = AVLayerVideoGravityResizeAspectFill
-            default:               videoGravity = AVLayerVideoGravityResizeAspect // AVCaptureVideoPreviewLayer's Default
+            case .scaleToFill:     videoGravity = .resize
+            case .scaleAspectFit:  videoGravity = .resizeAspect
+            case .scaleAspectFill: videoGravity = .resizeAspectFill
+            default:               videoGravity = .resizeAspect // AVCaptureVideoPreviewLayer's Default
             }
         }
     }
-        
+    
 }

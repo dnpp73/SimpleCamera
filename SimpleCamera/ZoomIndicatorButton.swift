@@ -111,8 +111,8 @@ internal final class ZoomIndicatorButton: UIButton {
         let zoomFactorString = String(format: "%.1f", zoomFactor)
         let title: String
         if zoomFactorString.hasSuffix(".0") {
-            let index: String.Index = zoomFactorString.index(zoomFactorString.endIndex, offsetBy: -2)
-            title = zoomFactorString.substring(to: index) + "x"
+            let l = zoomFactorString.count - 2
+            title = zoomFactorString.prefix(l) + "x"
         } else {
             title = zoomFactorString + "x"
         }
@@ -122,7 +122,7 @@ internal final class ZoomIndicatorButton: UIButton {
 }
 
 extension ZoomIndicatorButton: SimpleCameraObservable {
-    func simpleCameraDidChangeZoomFactor(simpleCamera: SimpleCamera) {
+    internal func simpleCameraDidChangeZoomFactor(simpleCamera: SimpleCamera) {
         updateTitleForCurrentZoomFactor()
     }
 }

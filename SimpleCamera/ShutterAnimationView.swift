@@ -2,7 +2,7 @@ import UIKit
 
 internal final class ShutterAnimationView: UIView {
     
-    func shutterCloseAnimation(duration: TimeInterval, completion: ((Bool) -> Void)?) {
+    internal func shutterCloseAnimation(duration: TimeInterval, completion: ((Bool) -> Void)?) {
         let anim = {
             self.backgroundColor = UIColor.black
         }
@@ -18,7 +18,7 @@ internal final class ShutterAnimationView: UIView {
         }
     }
     
-    func shutterOpenAnimation(duration: TimeInterval, completion: ((Bool) -> Void)?) {
+    internal func shutterOpenAnimation(duration: TimeInterval, completion: ((Bool) -> Void)?) {
         let anim = {
             self.backgroundColor = UIColor.clear
         }

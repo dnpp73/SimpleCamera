@@ -29,7 +29,7 @@ public func createUIImage(from ciImage: CIImage, imageScale: CGFloat = 1.0, imag
     // filter.setValue(imageScale, forKey: "inputScale")
     // filter.setValue(1.0, forKey: "inputAspectRatio")
     // let scaledCIImage = filter.value(forKey: "outputImage") as! CIImage
-    let scaledCIImage = ciImage.applying(CGAffineTransform(scaleX: imageScale, y: imageScale))
+    let scaledCIImage = ciImage.transformed(by: CGAffineTransform(scaleX: imageScale, y: imageScale))
     
     // 一度 rect を作ってから CGImage を経由して UIImage を作らないとアスペクト比が壊れてしまう
     guard let cgimage = cicontext.createCGImage(scaledCIImage, from: scaledCIImage.extent) else {

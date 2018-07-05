@@ -52,15 +52,8 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
     
     private var gridRatio: CGFloat? {
         get {
-            if  let captureVideoPreviewView = captureVideoPreviewView,
-                let connection = captureVideoPreviewView.captureVideoPreviewLayer.connection,
-                let port = connection.inputPorts?.first as? AVCaptureInputPort,
-                let deviceInput = port.input as? AVCaptureDeviceInput,
-                let device = deviceInput.device,
-                let activeFormat = device.activeFormat,
-                let formatDescription = activeFormat.formatDescription
-            {
-                let d = CMVideoFormatDescriptionGetDimensions(formatDescription)
+            if let input = captureVideoPreviewView?.captureVideoPreviewLayer.connection?.inputPorts.first?.input as? AVCaptureDeviceInput {
+                let d = CMVideoFormatDescriptionGetDimensions(input.device.activeFormat.formatDescription)
                 return CGFloat(d.width) / CGFloat(d.height)
             } else {
                 return nil
@@ -134,7 +127,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
     @IBAction private func handleFocusAndExposeTapGestureRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
         // captureVideoPreviewView の contentMode もとい videoGravity に応じて正しい CGPoint が返ってきてるように見えるので大丈夫そう。
         let viewPoint = gestureRecognizer.location(in: gestureRecognizer.view)
-        let devicePoint = captureVideoPreviewView.captureVideoPreviewLayer.captureDevicePointOfInterest(for: viewPoint)
+        let devicePoint = captureVideoPreviewView.captureVideoPreviewLayer.captureDevicePointConverted(fromLayerPoint: viewPoint)
         let x: Double = Double(devicePoint.x) - 0.5
         let y: Double = Double(devicePoint.y) - 0.5
         let distance: Double = sqrt( pow(x, 2.0) + pow(y, 2.0) )
@@ -319,14 +312,14 @@ extension CameraFinderView: SimpleCameraObservable {
     }
         
     public func simpleCameraDidChangeFocusPointOfInterest(simpleCamera: SimpleCamera) {
-        let point = captureVideoPreviewView.captureVideoPreviewLayer.pointForCaptureDevicePoint(ofInterest: simpleCamera.focusPointOfInterest)
+        let point = captureVideoPreviewView.captureVideoPreviewLayer.layerPointConverted(fromCaptureDevicePoint: simpleCamera.focusPointOfInterest)
         if !point.x.isNaN && !point.y.isNaN {
             focusIndicatorView.focusAnimation(to: point)
         }
     }
     
     public func simpleCameraDidChangeExposurePointOfInterest(simpleCamera: SimpleCamera) {
-        let point = captureVideoPreviewView.captureVideoPreviewLayer.pointForCaptureDevicePoint(ofInterest: simpleCamera.exposurePointOfInterest)
+        let point = captureVideoPreviewView.captureVideoPreviewLayer.layerPointConverted(fromCaptureDevicePoint: simpleCamera.exposurePointOfInterest)
         if !point.x.isNaN && !point.y.isNaN {
             exposureIndicatorView.exposureAnimation(to: point)
         }

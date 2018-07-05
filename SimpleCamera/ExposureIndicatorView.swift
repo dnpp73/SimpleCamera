@@ -21,7 +21,7 @@ internal final class ExposureIndicatorView: UIView {
         }
     }
     
-    func exposureResetAnimation(animated: Bool = true) {
+    internal func exposureResetAnimation(animated: Bool = true) {
         let selector = #selector(animateIndicatorViewAlpha)
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: selector, object: nil)
         UIView.animate(withDuration: animated ? movingTime : 0.0, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut], animations: {
@@ -34,7 +34,7 @@ internal final class ExposureIndicatorView: UIView {
         })
     }
     
-    func exposureAnimation(to point: CGPoint) {
+    internal func exposureAnimation(to point: CGPoint) {
         let selector = #selector(animateIndicatorViewAlpha)
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: selector, object: nil)
         UIView.animate(withDuration: movingTime, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut], animations: {

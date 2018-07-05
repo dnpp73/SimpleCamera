@@ -20,8 +20,8 @@ internal final class FocusIndicatorView: UIView {
             return CGRect(x: 0.0, y: 0.0, width: shortSide, height: shortSide)
         }
     }
-
-    func focusResetAnimation(animated: Bool = true) {
+    
+    internal func focusResetAnimation(animated: Bool = true) {
         let selector = #selector(animateIndicatorViewAlpha)
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: selector, object: nil)
         UIView.animate(withDuration: animated ? movingTime : 0.0, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut], animations: {
@@ -34,7 +34,7 @@ internal final class FocusIndicatorView: UIView {
         })
     }
     
-    func focusAnimation(to point: CGPoint) {
+    internal func focusAnimation(to point: CGPoint) {
         let selector = #selector(animateIndicatorViewAlpha)
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: selector, object: nil)
         UIView.animate(withDuration: movingTime, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut], animations: {

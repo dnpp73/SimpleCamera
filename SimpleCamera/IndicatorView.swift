@@ -4,12 +4,12 @@ internal final class CircleIndicatorView: UIView {
     
     // for Focus
     
-    override public func layoutSubviews() {
+    override internal func layoutSubviews() {
         super.layoutSubviews()
         setNeedsDisplay()
     }
     
-    override public func draw(_ rect: CGRect) {
+    override internal func draw(_ rect: CGRect) {
         guard let ctx = UIGraphicsGetCurrentContext() else { return}
         let color = #colorLiteral(red: 0.9568627477, green: 0.8340871711, blue: 0.5, alpha: 1)
         ctx.setStrokeColor(color.cgColor)
@@ -24,12 +24,12 @@ internal final class SquareIndicatorView: UIView {
     
     // for Exposure
     
-    override public func layoutSubviews() {
+    override internal func layoutSubviews() {
         super.layoutSubviews()
         setNeedsDisplay()
     }
     
-    override public func draw(_ rect: CGRect) {
+    override internal func draw(_ rect: CGRect) {
         guard let ctx = UIGraphicsGetCurrentContext() else { return }
         
         let color = #colorLiteral(red: 0.9568627477, green: 0.8340871711, blue: 0.5, alpha: 1)

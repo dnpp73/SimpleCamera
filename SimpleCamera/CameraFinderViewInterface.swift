@@ -10,7 +10,7 @@ public enum GridType: Equatable {
         }
     }
     
-    public var nextType: GridType {
+    public var next: GridType {
         get {
             switch self {
             case .none:
