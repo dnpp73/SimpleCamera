@@ -5,9 +5,6 @@ import AVFoundation
 
 public final class OrientationDetector: OrientationDetectorInterface {
     
-    public static let OrientationDidChange = NSNotification.Name(rawValue: "OrientationDidChange")
-    public static let CaptureVideoOrientationDidChange = NSNotification.Name(rawValue: "CaptureVideoOrientationDidChange")
-    
     public static let shared = OrientationDetector() // Singleton
     private init() {}
     
@@ -26,7 +23,7 @@ public final class OrientationDetector: OrientationDetectorInterface {
                 captureVideoOrientation = c
             }
             if orientationDidChange {
-                NotificationCenter.default.post(name: OrientationDetector.OrientationDidChange, object: nil)
+                NotificationCenter.default.post(name: .OrientationDetectorOrientationDidChange, object: nil)
             }
         }
     }
@@ -39,7 +36,7 @@ public final class OrientationDetector: OrientationDetectorInterface {
         }
         didSet {
             if captureVideoOrientationDidChange {
-                NotificationCenter.default.post(name: OrientationDetector.CaptureVideoOrientationDidChange, object: nil)
+                NotificationCenter.default.post(name: .OrientationDetectorCaptureVideoOrientationDidChange, object: nil)
             }
         }
     }

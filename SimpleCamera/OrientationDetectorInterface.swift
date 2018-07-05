@@ -10,10 +10,6 @@ import AVFoundation
 
 public protocol OrientationDetectorInterface: class {
     
-    // Notification
-    static var OrientationDidChange: NSNotification.Name { get }
-    static var CaptureVideoOrientationDidChange: NSNotification.Name { get }
-    
     // Singleton Pattern
     static var shared: OrientationDetector { get }
     
@@ -28,4 +24,9 @@ public protocol OrientationDetectorInterface: class {
     func startSensor()
     func stopSensor()
     
+}
+
+extension Notification.Name {
+    public static let OrientationDetectorOrientationDidChange = Notification.Name("OrientationDetectorOrientationDidChange")
+    public static let OrientationDetectorCaptureVideoOrientationDidChange = Notification.Name("OrientationDetectorCaptureVideoOrientationDidChange")
 }
