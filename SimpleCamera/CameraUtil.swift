@@ -16,7 +16,7 @@ extension AVCaptureConnection {
         guard let device = (self.inputPorts.first?.input as? AVCaptureDeviceInput)?.device else {
             return false
         }
-        
+
         switch device.position {
         case .front:
             return true
@@ -29,7 +29,7 @@ extension AVCaptureConnection {
 }
 
 extension AVCaptureDevice {
-    
+
     internal func lockAndConfiguration(block configurationBlock: (Swift.Void) -> Swift.Void) {
         do {
             try lockForConfiguration()
@@ -42,7 +42,7 @@ extension AVCaptureDevice {
             print(error)
         }
     }
-    
+
     internal func lockAndConfiguration(queue: DispatchQueue, sync: Bool = true, configurationBlock: @escaping (Swift.Void) -> Swift.Void) {
         let execute = {
             do {
@@ -62,11 +62,11 @@ extension AVCaptureDevice {
             queue.async(execute: execute)
         }
     }
-    
+
 }
 
 extension Array where Element : AVCaptureDevice.Format {
-    
+
     /*
      ピクセルフォーマットのメモ。
      420f はフルレンジ(luma=[0,255] chroma=[1,255])
@@ -75,13 +75,13 @@ extension Array where Element : AVCaptureDevice.Format {
      420v == 875704438
      420f == 875704422
      */
-    
+
     internal var fliter420v: [AVCaptureDevice.Format] {
         return filter { (format: AVCaptureDevice.Format) -> Bool in
             return CMFormatDescriptionGetMediaSubType(format.formatDescription) == 875704438
         }
     }
-    
+
     internal var sortedByQuality: [AVCaptureDevice.Format] {
         return sorted { (a, b) -> Bool in
             let ad = CMVideoFormatDescriptionGetDimensions(a.formatDescription)
@@ -96,19 +96,19 @@ extension Array where Element : AVCaptureDevice.Format {
             }
         }
     }
-    
+
     internal var filterAspect4_3: [AVCaptureDevice.Format] {
         return filter { (format: AVCaptureDevice.Format) -> Bool in
             let d = CMVideoFormatDescriptionGetDimensions(format.formatDescription)
             return d.width * 3 == d.height * 4 || d.width * 4 == d.height * 3
         }
     }
-    
+
     internal var filterAspect16_9: [AVCaptureDevice.Format] {
         return filter { (format: AVCaptureDevice.Format) -> Bool in
             let d = CMVideoFormatDescriptionGetDimensions(format.formatDescription)
             return d.width * 9 == d.height * 16 || d.width * 16 == d.height * 9
         }
     }
-    
+
 }

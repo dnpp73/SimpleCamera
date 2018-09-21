@@ -12,7 +12,7 @@ public func createCIImage(from sampleBuffer: CMSampleBuffer) -> CIImage? {
     guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
         return nil
     }
-    
+
     return CIImage(cvPixelBuffer: pixelBuffer)
 }
 
@@ -30,13 +30,13 @@ public func createUIImage(from ciImage: CIImage, imageScale: CGFloat = 1.0, imag
     // filter.setValue(1.0, forKey: "inputAspectRatio")
     // let scaledCIImage = filter.value(forKey: "outputImage") as! CIImage
     let scaledCIImage = ciImage.transformed(by: CGAffineTransform(scaleX: imageScale, y: imageScale))
-    
+
     // 一度 rect を作ってから CGImage を経由して UIImage を作らないとアスペクト比が壊れてしまう
     guard let cgimage = cicontext.createCGImage(scaledCIImage, from: scaledCIImage.extent) else {
         return nil
     }
     return UIImage(cgImage: cgimage, scale: 1.0, orientation: imageOrientation)
-    
+
     // これだとアスペクト比が壊れてしまう。
     // return UIImage(ciImage: scaledCIImage, scale: UIScreen.main.scale, orientation: imageOrientation)
 }

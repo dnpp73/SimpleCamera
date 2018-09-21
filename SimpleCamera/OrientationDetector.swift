@@ -4,16 +4,16 @@ import CoreMotion
 import AVFoundation
 
 public final class OrientationDetector: OrientationDetectorInterface {
-    
+
     public static let shared = OrientationDetector() // Singleton
     private init() {}
-    
+
     deinit {
         stopSensor()
     }
-    
+
     private var orientationDidChange: Bool = false
-    
+
     private(set) public var orientation: UIDeviceOrientation = .unknown {
         willSet {
             orientationDidChange = (orientation != newValue)
@@ -27,9 +27,9 @@ public final class OrientationDetector: OrientationDetectorInterface {
             }
         }
     }
-    
+
     private var captureVideoOrientationDidChange: Bool = false
-    
+
     private(set) public var captureVideoOrientation: AVCaptureVideoOrientation = .portrait {
         willSet {
             captureVideoOrientationDidChange = (captureVideoOrientation != newValue)
@@ -40,7 +40,7 @@ public final class OrientationDetector: OrientationDetectorInterface {
             }
         }
     }
-    
+
     public var sensorInterval: TimeInterval = 0.1 /* 10 Hz */ {
         didSet {
             if motionManager.isDeviceMotionAvailable && motionManager.isDeviceMotionActive {
@@ -48,9 +48,9 @@ public final class OrientationDetector: OrientationDetectorInterface {
             }
         }
     }
-    
+
     private let motionManager = CMMotionManager()
-    
+
     public func startSensor() {
         if motionManager.isDeviceMotionAvailable && !motionManager.isDeviceMotionActive {
             motionManager.deviceMotionUpdateInterval = sensorInterval
@@ -58,14 +58,14 @@ public final class OrientationDetector: OrientationDetectorInterface {
                 guard let deviceMotion = deviceMotion else {
                     return
                 }
-                
+
                 let thresholdFaceUpDown = 0.3
                 let thresholdPortraitLandscape = 0.1
-                
+
                 let x = deviceMotion.gravity.x
                 let y = deviceMotion.gravity.y
                 let z = deviceMotion.gravity.z
-                
+
                 if abs(z) > abs(x) + abs(y) + thresholdFaceUpDown {
                     if z > 0 {
                         self.orientation = .faceDown
@@ -96,12 +96,12 @@ public final class OrientationDetector: OrientationDetectorInterface {
             }
         }
     }
-    
+
     public func stopSensor() {
         if motionManager.isDeviceMotionAvailable && motionManager.isDeviceMotionActive {
             motionManager.stopDeviceMotionUpdates()
         }
         orientation = .unknown
     }
-    
+
 }

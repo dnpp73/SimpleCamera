@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 public extension AVCaptureVideoOrientation {
-    
+
     public init?(deviceOrientation: UIDeviceOrientation) {
         // UIDeviceOrientation.landscapeLeft  と AVCaptureVideoOrientation.landscapeRight
         // UIDeviceOrientation.landscapeRight と AVCaptureVideoOrientation.landscapeLeft
@@ -15,7 +15,7 @@ public extension AVCaptureVideoOrientation {
         default: return nil // faceUp と faceDown は未定義
         }
     }
-    
+
     // UIInterfaceOrientation については定義部分のコメントに
     // Note that UIInterfaceOrientationLandscapeLeft is equal to UIDeviceOrientationLandscapeRight (and vice versa).
     // This is because rotating the device to the left requires rotating the content to the right.
@@ -29,11 +29,11 @@ public extension AVCaptureVideoOrientation {
         default: return nil
         }
     }
-    
+
 }
 
 public extension UIImage.Orientation {
-    
+
     public var mirrored: UIImage.Orientation {
         get {
             switch self {
@@ -48,7 +48,7 @@ public extension UIImage.Orientation {
             }
         }
     }
-    
+
     public var rotateRight: UIImage.Orientation {
         get {
             switch self {
@@ -63,7 +63,7 @@ public extension UIImage.Orientation {
             }
         }
     }
-    
+
     public var rotateLeft: UIImage.Orientation {
         get {
             switch self {
@@ -78,7 +78,7 @@ public extension UIImage.Orientation {
             }
         }
     }
-    
+
     public var rotateUpsideDown: UIImage.Orientation {
         get {
             switch self {
@@ -93,7 +93,7 @@ public extension UIImage.Orientation {
             }
         }
     }
-    
+
     public var swapLeftRight: UIImage.Orientation {
         get {
             switch self {
@@ -108,7 +108,7 @@ public extension UIImage.Orientation {
             }
         }
     }
-    
+
     public init(captureVideoOrientation: AVCaptureVideoOrientation) {
         switch captureVideoOrientation {
         case .portrait:           self = .up
@@ -117,5 +117,5 @@ public extension UIImage.Orientation {
         case .landscapeLeft:      self = .right
         }
     }
-    
+
 }

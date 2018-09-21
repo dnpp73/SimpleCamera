@@ -1,13 +1,13 @@
 import UIKit
 
 private extension UIImage {
-    
+
     convenience init?(color: UIColor, size: CGSize) {
         if size.width <= 0 || size.height <= 0 {
             self.init()
             return nil
         }
-        
+
         UIGraphicsBeginImageContext(size)
         defer{
             UIGraphicsEndImageContext()
@@ -23,13 +23,13 @@ private extension UIImage {
         }
         self.init(cgImage: image)
     }
-    
+
 }
 
 internal final class ZoomIndicatorButton: UIButton {
-    
+
     // MARK:- UIView Extension
-    
+
     @IBInspectable dynamic var cornerRadius: CGFloat {
         get {
             return layer.cornerRadius
@@ -39,7 +39,7 @@ internal final class ZoomIndicatorButton: UIButton {
             layer.masksToBounds = newValue > 0
         }
     }
-    
+
     @IBInspectable dynamic var borderColor: UIColor {
         get {
             return UIColor(cgColor:layer.borderColor!)
@@ -48,7 +48,7 @@ internal final class ZoomIndicatorButton: UIButton {
             layer.borderColor = newValue.cgColor
         }
     }
-    
+
     @IBInspectable dynamic var borderWidth: CGFloat {
         get {
             return layer.borderWidth
@@ -57,9 +57,9 @@ internal final class ZoomIndicatorButton: UIButton {
             layer.borderWidth = newValue
         }
     }
-    
+
     // MARK:- UIButton Extension
-    
+
     private func setBackgroundColor(_ color: UIColor?, for state: UIControl.State) {
         if let color = color {
             let image = UIImage(color: color, size: bounds.size)
@@ -68,7 +68,7 @@ internal final class ZoomIndicatorButton: UIButton {
             setBackgroundImage(nil, for: state)
         }
     }
-    
+
     @IBInspectable dynamic var normalBackgroundColor: UIColor? {
         get {
             return nil // dummy
@@ -77,7 +77,7 @@ internal final class ZoomIndicatorButton: UIButton {
             setBackgroundColor(newValue, for: .normal)
         }
     }
-    
+
     @IBInspectable dynamic var highlightedBackgroundColor: UIColor? {
         get {
             return nil // dummy
@@ -86,7 +86,7 @@ internal final class ZoomIndicatorButton: UIButton {
             setBackgroundColor(newValue, for: .highlighted)
         }
     }
-    
+
     @IBInspectable dynamic var disabledBackgroundColor: UIColor? {
         get {
             return nil // dummy
@@ -95,17 +95,17 @@ internal final class ZoomIndicatorButton: UIButton {
             setBackgroundColor(newValue, for: .disabled)
         }
     }
-    
+
     // MARK:- Initializer
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         updateTitleForCurrentZoomFactor()
         SimpleCamera.shared.add(simpleCameraObserver: self)
     }
-    
+
     // MARK:-
-    
+
     func updateTitleForCurrentZoomFactor() {
         let zoomFactor = SimpleCamera.shared.zoomFactor
         let zoomFactorString = String(format: "%.1f", zoomFactor)
@@ -118,7 +118,7 @@ internal final class ZoomIndicatorButton: UIButton {
         }
         setTitle(title, for: .normal)
     }
-    
+
 }
 
 import AVFoundation
@@ -134,7 +134,7 @@ extension ZoomIndicatorButton: SimpleCameraObservable {
 //    @available(iOS 9.0, *)
 //    func simpleCameraSessionWasInterrupted(simpleCamera: SimpleCamera, reason: AVCaptureSession.InterruptionReason) {}
     func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera) {}
-    
+
     internal func simpleCameraDidChangeZoomFactor(simpleCamera: SimpleCamera) {
         updateTitleForCurrentZoomFactor()
     }

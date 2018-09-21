@@ -2,21 +2,21 @@ import UIKit
 import AVFoundation
 
 public final class AVCaptureVideoPreviewView: UIView {
-    
+
     // MARK:- AVCaptureVideoPreviewLayer
-    
+
     override public class var layerClass : AnyClass {
         return AVCaptureVideoPreviewLayer.self
     }
-    
+
     public var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer {
         get {
             return layer as! AVCaptureVideoPreviewLayer
         }
     }
-    
+
     // MARK:- AVCaptureVideoPreviewLayer Property Bridge
-    
+
     public var videoGravity: AVLayerVideoGravity {
         get {
             return captureVideoPreviewLayer.videoGravity
@@ -25,7 +25,7 @@ public final class AVCaptureVideoPreviewView: UIView {
             captureVideoPreviewLayer.videoGravity = newValue
         }
     }
-    
+
     public var session: AVCaptureSession? {
         get {
             return captureVideoPreviewLayer.session
@@ -34,15 +34,15 @@ public final class AVCaptureVideoPreviewView: UIView {
             captureVideoPreviewLayer.session = newValue
         }
     }
-    
+
     public var connection: AVCaptureConnection? {
         get {
             return captureVideoPreviewLayer.connection
         }
     }
-    
+
     // MARK:- UIView
-    
+
     public override var contentMode: UIView.ContentMode {
         didSet {
             // 何故か CoreAnimation の暗黙の action っぽいアニメーションが走るので
@@ -59,5 +59,5 @@ public final class AVCaptureVideoPreviewView: UIView {
             }
         }
     }
-    
+
 }

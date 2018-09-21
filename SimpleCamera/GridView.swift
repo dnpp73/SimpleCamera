@@ -1,51 +1,51 @@
 import UIKit
 
 public final class GridView: UIView {
-    
+
     // MARK:- Grid Setting
-    
+
     public var gridType: GridType = .none {
         didSet {
             setNeedsDisplay()
         }
     }
-    
+
     @IBInspectable public var blackLineWidth: CGFloat = 1.0 {
         didSet {
             setNeedsDisplay()
         }
     }
-    
+
     @IBInspectable public var whiteLineWidth: CGFloat = 0.5 {
         didSet {
             setNeedsDisplay()
         }
     }
-    
+
     @IBInspectable public var blackLineAlpha: CGFloat = 0.7 {
         didSet {
             setNeedsDisplay()
         }
     }
-    
+
     @IBInspectable public var whiteLineAlpha: CGFloat = 1.0 {
         didSet {
             setNeedsDisplay()
         }
     }
-    
+
     // MARK:- UIView
-    
+
     override public func layoutSubviews() {
         super.layoutSubviews()
         setNeedsDisplay()
     }
-    
+
     override public func draw(_ rect: CGRect) {
         guard let ctx = UIGraphicsGetCurrentContext() else {
             return
         }
-        
+
         switch gridType {
         case .none:
             break
@@ -66,7 +66,7 @@ public final class GridView: UIView {
                 ctx.addLine(to: CGPoint(x: rect.width, y: n))
                 ctx.strokePath()
             }
-            
+
             ctx.setLineWidth(whiteLineWidth)
             ctx.setStrokeColor(gray: 1.0, alpha: whiteLineAlpha) // 白
             for i in 0..<vertical {
@@ -84,7 +84,7 @@ public final class GridView: UIView {
                 ctx.strokePath()
             }
         }
-        
+
     }
-    
+
 }

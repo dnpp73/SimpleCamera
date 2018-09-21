@@ -1,9 +1,9 @@
 import UIKit
 
 internal final class FocusIndicatorView: UIView {
-    
+
     @IBOutlet private weak var indicatorView: UIView! // Circle
-    
+
     private let baseAlpha: CGFloat = 0.5
     private let movingTime: TimeInterval = 0.25
     private let fadeTime: TimeInterval = 0.3
@@ -20,7 +20,7 @@ internal final class FocusIndicatorView: UIView {
             return CGRect(x: 0.0, y: 0.0, width: shortSide, height: shortSide)
         }
     }
-    
+
     internal func focusResetAnimation(animated: Bool = true) {
         let selector = #selector(animateIndicatorViewAlpha)
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: selector, object: nil)
@@ -33,7 +33,7 @@ internal final class FocusIndicatorView: UIView {
             self.perform(selector, with: nil, afterDelay: self.afterDelay)
         })
     }
-    
+
     internal func focusAnimation(to point: CGPoint) {
         let selector = #selector(animateIndicatorViewAlpha)
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: selector, object: nil)
@@ -46,7 +46,7 @@ internal final class FocusIndicatorView: UIView {
             self.perform(selector, with: nil, afterDelay: self.afterDelay)
         })
     }
-    
+
     @objc private func animateIndicatorViewAlpha() {
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #function, object: nil)
         let alpha: CGFloat = indicatorView.center == center ? 0.0 : baseAlpha / 2.0
@@ -56,5 +56,5 @@ internal final class FocusIndicatorView: UIView {
             // nop
         })
     }
-    
+
 }
