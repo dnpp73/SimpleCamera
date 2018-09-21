@@ -60,7 +60,7 @@ internal final class ZoomIndicatorButton: UIButton {
     
     // MARK:- UIButton Extension
     
-    private func setBackgroundColor(_ color: UIColor?, for state: UIControlState) {
+    private func setBackgroundColor(_ color: UIColor?, for state: UIControl.State) {
         if let color = color {
             let image = UIImage(color: color, size: bounds.size)
             setBackgroundImage(image, for: state)

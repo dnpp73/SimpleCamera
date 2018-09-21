@@ -2,7 +2,7 @@ import UIKit
 
 public extension UIImage {
     
-    private func replace(imageOrientation: UIImageOrientation) -> UIImage? {
+    private func replace(imageOrientation: UIImage.Orientation) -> UIImage? {
         guard let cgImage = cgImage else { return nil }
         return UIImage(cgImage: cgImage, scale: scale, orientation: imageOrientation)
     }

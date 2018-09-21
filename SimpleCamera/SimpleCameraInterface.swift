@@ -104,5 +104,5 @@ public protocol SimpleCameraInterface: class {
     func remove(audioOutputObserver: SimpleCameraAudioOutputObservable)
     
     // Utility
-    var preferredUIImageOrientationForVideoOutput: UIImageOrientation { get }
+    var preferredUIImageOrientationForVideoOutput: UIImage.Orientation { get }
 }

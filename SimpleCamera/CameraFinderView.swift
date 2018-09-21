@@ -19,7 +19,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
     
     // MARK:- UIView
     
-    public override var contentMode: UIViewContentMode {
+    public override var contentMode: UIView.ContentMode {
         didSet {
             updateSubviewContentModes()
         }

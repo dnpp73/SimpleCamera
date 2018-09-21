@@ -262,7 +262,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                     scaledImage = i
                 }
                 
-                let metadata = CMCopyDictionaryOfAttachments(nil, imageDataBuffer, CMAttachmentMode(kCMAttachmentMode_ShouldPropagate)) as? [String : Any]
+                let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: imageDataBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String : Any]
                 let mirrored = self.isMirroredImageIfFrontCamera && captureImageConnection.isFrontCameraDevice
                 let image = mirrored ? scaledImage.mirrored : scaledImage
                 onMainThread {
@@ -1052,7 +1052,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
 extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
-    public var preferredUIImageOrientationForVideoOutput: UIImageOrientation {
+    public var preferredUIImageOrientationForVideoOutput: UIImage.Orientation {
         get {
             guard isRunning else {
                 return .up
@@ -1060,9 +1060,9 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
             
             // 撮影直前に connection の videoOrientation を弄ると実用的に問題があるので、UIImageOrientation をここで放り込む実装が現実的
             // caputureVideoConnection の videoOrientation は .up に固定して初期化しているはずなので、その前提で進める。
-            let imageOrientation: UIImageOrientation
+            let imageOrientation: UIImage.Orientation
             let captureVideoOrientation = !isFollowDeviceOrientationWhenCapture ? .portrait : OrientationDetector.shared.captureVideoOrientation
-            let i = UIImageOrientation(captureVideoOrientation: captureVideoOrientation)
+            let i = UIImage.Orientation(captureVideoOrientation: captureVideoOrientation)
             if let connection = videoOutput.connection(with: .video), connection.isFrontCameraDevice {
                 // Front Camera のときはちょっとややこしい
                 imageOrientation = isMirroredImageIfFrontCamera ? i.swapLeftRight.mirrored : i.swapLeftRight
@@ -1081,7 +1081,7 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
             if let silentCaptureImageCompletion = silentCaptureImageCompletion {
                 self.silentCaptureImageCompletion = nil
                 let image = createUIImage(from: sampleBuffer, limitSize: captureLimitSize, imageOrientation: preferredUIImageOrientationForVideoOutput)
-                let metadata = CMCopyDictionaryOfAttachments(nil, sampleBuffer, CMAttachmentMode(kCMAttachmentMode_ShouldPropagate)) as? [String : Any]
+                let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: sampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String : Any]
                 isSilentCapturingImage = false
                 onMainThread {
                     silentCaptureImageCompletion(image, metadata)

@@ -32,9 +32,9 @@ public extension AVCaptureVideoOrientation {
     
 }
 
-public extension UIImageOrientation {
+public extension UIImage.Orientation {
     
-    public var mirrored: UIImageOrientation {
+    public var mirrored: UIImage.Orientation {
         get {
             switch self {
             case .up:            return .upMirrored
@@ -49,7 +49,7 @@ public extension UIImageOrientation {
         }
     }
     
-    public var rotateRight: UIImageOrientation {
+    public var rotateRight: UIImage.Orientation {
         get {
             switch self {
             case .up:            return .right
@@ -64,7 +64,7 @@ public extension UIImageOrientation {
         }
     }
     
-    public var rotateLeft: UIImageOrientation {
+    public var rotateLeft: UIImage.Orientation {
         get {
             switch self {
             case .up:            return .left
@@ -79,7 +79,7 @@ public extension UIImageOrientation {
         }
     }
     
-    public var rotateUpsideDown: UIImageOrientation {
+    public var rotateUpsideDown: UIImage.Orientation {
         get {
             switch self {
             case .up:            return .down
@@ -94,7 +94,7 @@ public extension UIImageOrientation {
         }
     }
     
-    public var swapLeftRight: UIImageOrientation {
+    public var swapLeftRight: UIImage.Orientation {
         get {
             switch self {
             case .up:            return .up

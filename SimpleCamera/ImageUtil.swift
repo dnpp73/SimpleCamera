@@ -18,11 +18,11 @@ public func createCIImage(from sampleBuffer: CMSampleBuffer) -> CIImage? {
 
 // MARK:- CIContext
 
-private let cicontext = CIContext(options: [kCIContextUseSoftwareRenderer: false])
+private let cicontext = CIContext(options: [.useSoftwareRenderer: false])
 
 // MARK:- Image Scale
 
-public func createUIImage(from ciImage: CIImage, imageScale: CGFloat = 1.0, imageOrientation: UIImageOrientation = .up) -> UIImage? {
+public func createUIImage(from ciImage: CIImage, imageScale: CGFloat = 1.0, imageOrientation: UIImage.Orientation = .up) -> UIImage? {
     // ただアフィン変換を適用するだけなら CIFilter の CILanczosScaleTransform は遅い
     // let filter = CIFilter(name: "CILanczosScaleTransform")!
     // filter.setValue(ciImage, forKey: "inputImage")
@@ -41,7 +41,7 @@ public func createUIImage(from ciImage: CIImage, imageScale: CGFloat = 1.0, imag
     // return UIImage(ciImage: scaledCIImage, scale: UIScreen.main.scale, orientation: imageOrientation)
 }
 
-public func createUIImage(from sampleBuffer: CMSampleBuffer, imageScale: CGFloat = 1.0, imageOrientation: UIImageOrientation = .up) -> UIImage? {
+public func createUIImage(from sampleBuffer: CMSampleBuffer, imageScale: CGFloat = 1.0, imageOrientation: UIImage.Orientation = .up) -> UIImage? {
     guard let image = createCIImage(from: sampleBuffer) else {
         return nil
     }
@@ -50,7 +50,7 @@ public func createUIImage(from sampleBuffer: CMSampleBuffer, imageScale: CGFloat
 
 // MARK:- Limit Size
 
-public func createUIImage(from ciImage: CIImage, limitSize: CGSize = .zero, imageOrientation: UIImageOrientation = .up) -> UIImage? {
+public func createUIImage(from ciImage: CIImage, limitSize: CGSize = .zero, imageOrientation: UIImage.Orientation = .up) -> UIImage? {
     let imageScale: CGFloat
     if limitSize == .zero {
         imageScale = 1.0
@@ -67,7 +67,7 @@ public func createUIImage(from ciImage: CIImage, limitSize: CGSize = .zero, imag
     return createUIImage(from: ciImage, imageScale: imageScale, imageOrientation: imageOrientation)
 }
 
-public func createUIImage(from sampleBuffer: CMSampleBuffer, limitSize: CGSize = .zero, imageOrientation: UIImageOrientation = .up) -> UIImage? {
+public func createUIImage(from sampleBuffer: CMSampleBuffer, limitSize: CGSize = .zero, imageOrientation: UIImage.Orientation = .up) -> UIImage? {
     guard let image = createCIImage(from: sampleBuffer) else {
         return nil
     }

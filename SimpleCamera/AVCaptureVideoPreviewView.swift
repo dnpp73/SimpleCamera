@@ -43,7 +43,7 @@ public final class AVCaptureVideoPreviewView: UIView {
     
     // MARK:- UIView
     
-    public override var contentMode: UIViewContentMode {
+    public override var contentMode: UIView.ContentMode {
         didSet {
             // 何故か CoreAnimation の暗黙の action っぽいアニメーションが走るので
             CATransaction.begin()
