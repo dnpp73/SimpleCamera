@@ -3,7 +3,7 @@ import AVFoundation
 
 public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
-    // MARK:- IBOutlet
+    // MARK: - IBOutlet
 
     @IBOutlet private(set) public weak var captureVideoPreviewView: AVCaptureVideoPreviewView!
     @IBOutlet private(set) public weak var contentView: UIView!
@@ -17,7 +17,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
     @IBOutlet fileprivate weak var captureVideoPreviewViewTapGestureRecognizer: UITapGestureRecognizer!
     @IBOutlet fileprivate weak var captureVideoPreviewViewPinchGestureRecognizer: UIPinchGestureRecognizer!
 
-    // MARK:- UIView
+    // MARK: - UIView
 
     public override var contentMode: UIView.ContentMode {
         didSet {
@@ -90,7 +90,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
         }
     }
 
-    // MARK:- Initializer
+    // MARK: - Initializer
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -122,7 +122,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
         zoomIndicatorButton.isHidden = !(SimpleCamera.shared.maxZoomFactor > 1.0)
     }
 
-    // MARK:- IBActions
+    // MARK: - IBActions
 
     @IBAction private func handleFocusAndExposeTapGestureRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
         // captureVideoPreviewView の contentMode もとい videoGravity に応じて正しい CGPoint が返ってきてるように見えるので大丈夫そう。
@@ -165,7 +165,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
         SimpleCamera.shared.resetFocusAndExposure()
     }
 
-    // MARK:- Tap to Focus, Pinch to Zoom
+    // MARK: - Tap to Focus, Pinch to Zoom
 
     @IBInspectable public var isEnabledTapToFocusAndExposure: Bool {
         get {
@@ -191,7 +191,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
         }
     }
 
-    // MARK:- GridView Property Bridge
+    // MARK: - GridView Property Bridge
 
     public var gridType: GridType {
         get {
@@ -243,7 +243,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
         }
     }
 
-    // MARK:- Focus Exposure Indicator
+    // MARK: - Focus Exposure Indicator
 
     @IBInspectable public var isFollowFocusIndicatoreHiddenDeviceCapability: Bool = true {
         didSet {
@@ -287,7 +287,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
         }
     }
 
-    // MARK:- Shutter Animation
+    // MARK: - Shutter Animation
 
     public func shutterCloseAnimation(duration: TimeInterval, completion: ((Bool) -> Void)?) {
         shutterAnimationView.shutterCloseAnimation(duration: duration, completion: completion)

@@ -9,7 +9,7 @@ private extension UIImage {
         }
 
         UIGraphicsBeginImageContext(size)
-        defer{
+        defer {
             UIGraphicsEndImageContext()
         }
         let rect = CGRect(origin: CGPoint.zero, size: size)
@@ -28,7 +28,7 @@ private extension UIImage {
 
 internal final class ZoomIndicatorButton: UIButton {
 
-    // MARK:- UIView Extension
+    // MARK: - UIView Extension
 
     @IBInspectable dynamic var cornerRadius: CGFloat {
         get {
@@ -42,7 +42,7 @@ internal final class ZoomIndicatorButton: UIButton {
 
     @IBInspectable dynamic var borderColor: UIColor {
         get {
-            return UIColor(cgColor:layer.borderColor!)
+            return UIColor(cgColor: layer.borderColor!)
         }
         set {
             layer.borderColor = newValue.cgColor
@@ -58,7 +58,7 @@ internal final class ZoomIndicatorButton: UIButton {
         }
     }
 
-    // MARK:- UIButton Extension
+    // MARK: - UIButton Extension
 
     private func setBackgroundColor(_ color: UIColor?, for state: UIControl.State) {
         if let color = color {
@@ -96,7 +96,7 @@ internal final class ZoomIndicatorButton: UIButton {
         }
     }
 
-    // MARK:- Initializer
+    // MARK: - Initializer
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -104,7 +104,7 @@ internal final class ZoomIndicatorButton: UIButton {
         SimpleCamera.shared.add(simpleCameraObserver: self)
     }
 
-    // MARK:-
+    // MARK: -
 
     func updateTitleForCurrentZoomFactor() {
         let zoomFactor = SimpleCamera.shared.zoomFactor

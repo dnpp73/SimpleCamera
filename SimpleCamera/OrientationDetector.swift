@@ -69,28 +69,22 @@ public final class OrientationDetector: OrientationDetectorInterface {
                 if abs(z) > abs(x) + abs(y) + thresholdFaceUpDown {
                     if z > 0 {
                         self.orientation = .faceDown
-                    }
-                    else {
+                    } else {
                         self.orientation = .faceUp
                     }
-                }
-                else if abs(x) > abs(y) + abs(z) + thresholdPortraitLandscape {
+                } else if abs(x) > abs(y) + abs(z) + thresholdPortraitLandscape {
                     if x > 0 {
                         self.orientation = .landscapeRight
-                    }
-                    else {
+                    } else {
                         self.orientation = .landscapeLeft
                     }
-                }
-                else if abs(y) > abs(x) + abs(z) + thresholdPortraitLandscape {
+                } else if abs(y) > abs(x) + abs(z) + thresholdPortraitLandscape {
                     if y > 0 {
                         self.orientation = .portraitUpsideDown
-                    }
-                    else {
+                    } else {
                         self.orientation = .portrait
                     }
-                }
-                else {
+                } else {
                     // 閾値未満
                 }
             }

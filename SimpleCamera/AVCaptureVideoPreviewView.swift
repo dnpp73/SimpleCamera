@@ -3,19 +3,19 @@ import AVFoundation
 
 public final class AVCaptureVideoPreviewView: UIView {
 
-    // MARK:- AVCaptureVideoPreviewLayer
+    // MARK: - AVCaptureVideoPreviewLayer
 
-    override public class var layerClass : AnyClass {
+    override public class var layerClass: AnyClass {
         return AVCaptureVideoPreviewLayer.self
     }
 
     public var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer {
         get {
-            return layer as! AVCaptureVideoPreviewLayer
+            return layer as! AVCaptureVideoPreviewLayer // swiftlint:disable:this force_cast
         }
     }
 
-    // MARK:- AVCaptureVideoPreviewLayer Property Bridge
+    // MARK: - AVCaptureVideoPreviewLayer Property Bridge
 
     public var videoGravity: AVLayerVideoGravity {
         get {
@@ -41,7 +41,7 @@ public final class AVCaptureVideoPreviewView: UIView {
         }
     }
 
-    // MARK:- UIView
+    // MARK: - UIView
 
     public override var contentMode: UIView.ContentMode {
         didSet {

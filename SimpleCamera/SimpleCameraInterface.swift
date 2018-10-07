@@ -56,8 +56,8 @@ public protocol SimpleCameraInterface: class {
     // Capture Image
     var isCapturingImage: Bool { get }
     var captureLimitSize: CGSize { get set } // CGSize.zero is limitless
-    func captureStillImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String : Any]?) -> Void)
-    func captureSilentImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String : Any]?) -> Void)
+    func captureStillImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void)
+    func captureSilentImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void)
 
     // Record Movie
     var isEnabledAudioRecording: Bool { get set } // Default false. need `NSMicrophoneUsageDescription` key in Info.plist

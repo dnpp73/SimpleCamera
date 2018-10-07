@@ -11,8 +11,7 @@ internal final class ShutterAnimationView: UIView {
         }
         if duration > 0.0 {
             UIView.animate(withDuration: duration, animations: anim, completion: comp)
-        }
-        else {
+        } else {
             anim()
             comp(true)
         }
@@ -27,8 +26,7 @@ internal final class ShutterAnimationView: UIView {
         }
         if duration > 0.0 {
             UIView.animate(withDuration: duration, animations: anim, completion: comp)
-        }
-        else {
+        } else {
             anim()
             comp(true)
         }

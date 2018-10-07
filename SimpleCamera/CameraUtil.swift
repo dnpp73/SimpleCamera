@@ -37,8 +37,7 @@ extension AVCaptureDevice {
                 unlockForConfiguration()
             }
             configurationBlock(())
-        }
-        catch let error /* as NSError */ {
+        } catch let error /* as NSError */ {
             print(error)
         }
     }
@@ -51,8 +50,7 @@ extension AVCaptureDevice {
                     self.unlockForConfiguration()
                 }
                 configurationBlock(())
-            }
-            catch let error /* as NSError */ {
+            } catch let error /* as NSError */ {
                 print(error)
             }
         }
@@ -65,7 +63,7 @@ extension AVCaptureDevice {
 
 }
 
-extension Array where Element : AVCaptureDevice.Format {
+extension Array where Element: AVCaptureDevice.Format {
 
     /*
      ピクセルフォーマットのメモ。

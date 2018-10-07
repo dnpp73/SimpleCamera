@@ -2,7 +2,7 @@ import UIKit
 
 public final class GridView: UIView {
 
-    // MARK:- Grid Setting
+    // MARK: - Grid Setting
 
     public var gridType: GridType = .none {
         didSet {
@@ -34,7 +34,7 @@ public final class GridView: UIView {
         }
     }
 
-    // MARK:- UIView
+    // MARK: - UIView
 
     override public func layoutSubviews() {
         super.layoutSubviews()

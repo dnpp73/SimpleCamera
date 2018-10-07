@@ -3,7 +3,7 @@ import UIKit
 import AVFoundation
 import CoreImage
 
-// MARK:- CMSampleBuffer to CIImage
+// MARK: - CMSampleBuffer to CIImage
 
 public func createCIImage(from sampleBuffer: CMSampleBuffer) -> CIImage? {
     guard CMSampleBufferIsValid(sampleBuffer) else {
@@ -16,11 +16,11 @@ public func createCIImage(from sampleBuffer: CMSampleBuffer) -> CIImage? {
     return CIImage(cvPixelBuffer: pixelBuffer)
 }
 
-// MARK:- CIContext
+// MARK: - CIContext
 
 private let cicontext = CIContext(options: [.useSoftwareRenderer: false])
 
-// MARK:- Image Scale
+// MARK: - Image Scale
 
 public func createUIImage(from ciImage: CIImage, imageScale: CGFloat = 1.0, imageOrientation: UIImage.Orientation = .up) -> UIImage? {
     // ただアフィン変換を適用するだけなら CIFilter の CILanczosScaleTransform は遅い
@@ -48,7 +48,7 @@ public func createUIImage(from sampleBuffer: CMSampleBuffer, imageScale: CGFloat
     return createUIImage(from: image, imageScale: imageScale, imageOrientation: imageOrientation)
 }
 
-// MARK:- Limit Size
+// MARK: - Limit Size
 
 public func createUIImage(from ciImage: CIImage, limitSize: CGSize = .zero, imageOrientation: UIImage.Orientation = .up) -> UIImage? {
     let imageScale: CGFloat

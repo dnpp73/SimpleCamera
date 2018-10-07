@@ -19,11 +19,11 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     fileprivate let fileOutput     = AVCaptureMovieFileOutput()
 
     private var frontCameraVideoInput: AVCaptureDeviceInput?
-    private var backCameraVideoInput:  AVCaptureDeviceInput?
-    private var audioDeviceInput:      AVCaptureDeviceInput?
+    private var backCameraVideoInput: AVCaptureDeviceInput?
+    private var audioDeviceInput: AVCaptureDeviceInput?
 
     fileprivate var isSilentCapturingImage: Bool = false
-    fileprivate var silentCaptureImageCompletion: ((_ image: UIImage?, _ metadata: [String : Any]?) -> Void)? // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
+    fileprivate var silentCaptureImageCompletion: ((_ image: UIImage?, _ metadata: [String: Any]?) -> Void)? // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
 
     private let observers: NSHashTable<SimpleCameraObservable> = NSHashTable.weakObjects()
     fileprivate let videoOutputObservers: NSHashTable<SimpleCameraVideoOutputObservable> = NSHashTable.weakObjects()
@@ -31,13 +31,13 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     private weak var captureVideoPreviewView: AVCaptureVideoPreviewView?
 
-    // MARK:- Initializer
+    // MARK: - Initializer
 
     deinit { // deinit は class だけだよ
         tearDown()
     }
 
-    // MARK:- Public Functions
+    // MARK: - Public Functions
 
     public func setSession(to captureVideoPreviewView: AVCaptureVideoPreviewView) {
         if let c = self.captureVideoPreviewView, c.session != nil {
@@ -83,7 +83,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:  Preset
+    // MARK: Preset
 
     private(set) public var mode: CameraMode = .unknown
 
@@ -146,8 +146,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                         } else {
                             audioDeviceInput = nil
                         }
-                    }
-                    catch let error /* as NSError */ {
+                    } catch let error /* as NSError */ {
                         print(error)
                         audioDeviceInput = nil
                     }
@@ -194,7 +193,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:  Capture Image
+    // MARK: Capture Image
 
     public var isCapturingImage: Bool {
         get {
@@ -204,7 +203,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     public var captureLimitSize: CGSize = .zero
 
-    public func captureStillImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String : Any]?) -> Void) {
+    public func captureStillImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void) {
         guard isConfigured else {
             completion(nil, nil)
             return
@@ -262,7 +261,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                     scaledImage = i
                 }
 
-                let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: imageDataBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String : Any]
+                let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: imageDataBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String: Any]
                 let mirrored = self.isMirroredImageIfFrontCamera && captureImageConnection.isFrontCameraDevice
                 let image = mirrored ? scaledImage.mirrored : scaledImage
                 onMainThread {
@@ -273,7 +272,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     }
 
-    public func captureSilentImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String : Any]?) -> Void) {
+    public func captureSilentImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void) {
         guard isConfigured else {
             completion(nil, nil)
             return
@@ -300,7 +299,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:- Record Movie
+    // MARK: - Record Movie
 
     public var isEnabledAudioRecording: Bool = false
 
@@ -311,7 +310,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         guard isRecordingMovie == false else {
             return false
         }
-        guard mode == .movie else  {
+        guard mode == .movie else {
             return false
         }
         guard url.isFileURL else {
@@ -352,7 +351,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:  Camera Setting
+    // MARK: Camera Setting
 
     // TODO : ズームだけ実装した。ホワイトバランスや ISO やシャッタースピードの調整は後で lockCurrentCameraDeviceAndConfigure を使って作る。
 
@@ -378,7 +377,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         currentDevice?.lockAndConfiguration(queue: sessionQueue, sync: sync, configurationBlock: configurationBlock)
     }
 
-    // MARK:  Zoom
+    // MARK: Zoom
 
     public var zoomFactor: CGFloat {
         get {
@@ -415,7 +414,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:  Focus, Exposure
+    // MARK: Focus, Exposure
 
     public var focusPointOfInterest: CGPoint {
         get {
@@ -505,7 +504,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:  Switch Camera Input Front/Back
+    // MARK: Switch Camera Input Front/Back
 
     private func switchCaptureDeviceInput(_ captureDeviceInput: AVCaptureDeviceInput) {
         guard isConfigured else {
@@ -530,8 +529,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             if captureSession.canAddInput(captureDeviceInput) {
                 captureSession.addInput(captureDeviceInput)
                 switchSucceed = true
-            }
-            else if captureSession.canAddInput(currentInput) {
+            } else if captureSession.canAddInput(currentInput) {
                 captureSession.addInput(currentInput)
             }
 
@@ -591,18 +589,17 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     public func switchCameraInput() {
         if isCurrentInputFront {
             switchCameraInputToBack()
-        }
-        else if isCurrentInputBack {
+        } else if isCurrentInputBack {
             switchCameraInputToFront()
         }
     }
 
-    // MARK:  Orientation, Mirrored Setting
+    // MARK: Orientation, Mirrored Setting
 
     public var isMirroredImageIfFrontCamera = false
     public var isFollowDeviceOrientationWhenCapture = true
 
-    // MARK:  Manage SimpleCamera Observers
+    // MARK: Manage SimpleCamera Observers
 
     public func add(simpleCameraObserver: SimpleCameraObservable) {
         if !observers.contains(simpleCameraObserver) {
@@ -616,7 +613,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:  Manage VideoOutput Observer
+    // MARK: Manage VideoOutput Observer
 
     public func add(videoOutputObserver: SimpleCameraVideoOutputObservable) {
         if !videoOutputObservers.contains(videoOutputObserver) {
@@ -630,7 +627,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:  Manage AudioOutput Observers
+    // MARK: Manage AudioOutput Observers
 
     public func add(audioOutputObserver: SimpleCameraAudioOutputObservable) {
         if !audioOutputObservers.contains(audioOutputObserver) {
@@ -645,7 +642,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:- Private Functions
+    // MARK: - Private Functions
 
     private var isConfigured: Bool = false
 
@@ -670,8 +667,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                     print("frontCameraVideoInput is nil")
                     frontCameraVideoInput = nil
                 }
-            }
-            catch let error {
+            } catch let error {
                 print(error)
                 print("frontCameraVideoInput is nil")
                 frontCameraVideoInput = nil
@@ -683,8 +679,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                     print("backCameraVideoInput is nil")
                     backCameraVideoInput = nil
                 }
-            }
-            catch let error {
+            } catch let error {
                 print(error)
                 print("backCameraVideoInput is nil")
                 backCameraVideoInput = nil
@@ -696,7 +691,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             }
 
             // captureSession に imageOutput を放り込む
-            imageOutput.outputSettings = [ AVVideoCodecKey : AVVideoCodecJPEG ]
+            imageOutput.outputSettings = [ AVVideoCodecKey: AVVideoCodecJPEG ]
             if captureSession.canAddOutput(imageOutput) {
                 captureSession.addOutput(imageOutput)
             }
@@ -711,7 +706,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // とのこと。
             // iPhone 4s でのみ再現するんだけど、マジで何も言わずデバッガにも引っ掛からずにアプリが落ちるので
             // cameraVideoInputDevice と videoOutput のフォーマットを 420v の統一してみたところ落ちなくなった。
-            videoOutput.videoSettings = [String(kCVPixelBufferPixelFormatTypeKey) : NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange as UInt32)]
+            videoOutput.videoSettings = [String(kCVPixelBufferPixelFormatTypeKey): NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange as UInt32)]
             videoOutput.setSampleBufferDelegate(self, queue: videoOutputQueue)
             if captureSession.canAddOutput(videoOutput) {
                 captureSession.addOutput(videoOutput)
@@ -798,7 +793,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:  KVO and Notifications
+    // MARK: KVO and Notifications
 
     private var captureSessionRunningObserveContext = 0
 
@@ -820,25 +815,25 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     private func addObservers() {
         captureSession.addObserver(self, forKeyPath: "running", options: .new, context: &captureSessionRunningObserveContext)
 
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingFocus",        options: .new, context: &frontCameraDeviceAdjustingFocusObserveContext)
-        backCameraVideoInput?.device.addObserver(self,  forKeyPath: "adjustingFocus",        options: .new, context: &backCameraDeviceAdjustingFocusObserveContext)
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingExposure",     options: .new, context: &frontCameraDeviceAdjustingExposureObserveContext)
-        backCameraVideoInput?.device.addObserver(self,  forKeyPath: "adjustingExposure",     options: .new, context: &backCameraDeviceAdjustingExposureObserveContext)
+        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingFocus", options: .new, context: &frontCameraDeviceAdjustingFocusObserveContext)
+        backCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingFocus", options: .new, context: &backCameraDeviceAdjustingFocusObserveContext)
+        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingExposure", options: .new, context: &frontCameraDeviceAdjustingExposureObserveContext)
+        backCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingExposure", options: .new, context: &backCameraDeviceAdjustingExposureObserveContext)
         frontCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingWhiteBalance", options: .new, context: &frontCameraDeviceAdjustingWhiteBalanceObserveContext)
-        backCameraVideoInput?.device.addObserver(self,  forKeyPath: "adjustingWhiteBalance", options: .new, context: &backCameraDeviceAdjustingWhiteBalanceObserveContext)
+        backCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingWhiteBalance", options: .new, context: &backCameraDeviceAdjustingWhiteBalanceObserveContext)
 
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "focusPointOfInterest",    options: .new, context: &frontCameraDeviceFocusPointOfInterestObserveContext)
-        backCameraVideoInput?.device.addObserver(self,  forKeyPath: "focusPointOfInterest",    options: .new, context: &backCameraDeviceFocusPointOfInterestObserveContext)
+        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "focusPointOfInterest", options: .new, context: &frontCameraDeviceFocusPointOfInterestObserveContext)
+        backCameraVideoInput?.device.addObserver(self, forKeyPath: "focusPointOfInterest", options: .new, context: &backCameraDeviceFocusPointOfInterestObserveContext)
         frontCameraVideoInput?.device.addObserver(self, forKeyPath: "exposurePointOfInterest", options: .new, context: &frontCameraDeviceExposurePointOfInterestObserveContext)
-        backCameraVideoInput?.device.addObserver(self,  forKeyPath: "exposurePointOfInterest", options: .new, context: &backCameraDeviceExposurePointOfInterestObserveContext)
+        backCameraVideoInput?.device.addObserver(self, forKeyPath: "exposurePointOfInterest", options: .new, context: &backCameraDeviceExposurePointOfInterestObserveContext)
 
         frontCameraVideoInput?.device.addObserver(self, forKeyPath: "videoZoomFactor", options: .new, context: &frontCameraDeviceVideoZoomFactorObserveContext)
-        backCameraVideoInput?.device.addObserver(self,  forKeyPath: "videoZoomFactor", options: .new, context: &backCameraDeviceVideoZoomFactorObserveContext)
+        backCameraVideoInput?.device.addObserver(self, forKeyPath: "videoZoomFactor", options: .new, context: &backCameraDeviceVideoZoomFactorObserveContext)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange),     name: Notification.Name("AVCaptureDeviceSubjectAreaDidChangeNotification"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError),      name: Notification.Name("AVCaptureSessionRuntimeErrorNotification"),        object: captureSession)
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted),    name: Notification.Name("AVCaptureSessionWasInterruptedNotification"),      object: captureSession)
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: Notification.Name("AVCaptureSessionInterruptionEndedNotification"),   object: captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: Notification.Name("AVCaptureDeviceSubjectAreaDidChangeNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: Notification.Name("AVCaptureSessionRuntimeErrorNotification"), object: captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted), name: Notification.Name("AVCaptureSessionWasInterruptedNotification"), object: captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: Notification.Name("AVCaptureSessionInterruptionEndedNotification"), object: captureSession)
     }
 
     private func removeObservers() {
@@ -846,92 +841,79 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
         captureSession.removeObserver(self, forKeyPath: "running", context: &captureSessionRunningObserveContext)
 
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingFocus",        context: &frontCameraDeviceAdjustingFocusObserveContext)
-        backCameraVideoInput?.device.removeObserver(self,  forKeyPath: "adjustingFocus",        context: &backCameraDeviceAdjustingFocusObserveContext)
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingExposure",     context: &frontCameraDeviceAdjustingExposureObserveContext)
-        backCameraVideoInput?.device.removeObserver(self,  forKeyPath: "adjustingExposure",     context: &backCameraDeviceAdjustingExposureObserveContext)
+        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingFocus", context: &frontCameraDeviceAdjustingFocusObserveContext)
+        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingFocus", context: &backCameraDeviceAdjustingFocusObserveContext)
+        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingExposure", context: &frontCameraDeviceAdjustingExposureObserveContext)
+        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingExposure", context: &backCameraDeviceAdjustingExposureObserveContext)
         frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingWhiteBalance", context: &frontCameraDeviceAdjustingWhiteBalanceObserveContext)
-        backCameraVideoInput?.device.removeObserver(self,  forKeyPath: "adjustingWhiteBalance", context: &backCameraDeviceAdjustingWhiteBalanceObserveContext)
+        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingWhiteBalance", context: &backCameraDeviceAdjustingWhiteBalanceObserveContext)
 
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "focusPointOfInterest",    context: &frontCameraDeviceFocusPointOfInterestObserveContext)
-        backCameraVideoInput?.device.removeObserver(self,  forKeyPath: "focusPointOfInterest",    context: &backCameraDeviceFocusPointOfInterestObserveContext)
+        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "focusPointOfInterest", context: &frontCameraDeviceFocusPointOfInterestObserveContext)
+        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "focusPointOfInterest", context: &backCameraDeviceFocusPointOfInterestObserveContext)
         frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "exposurePointOfInterest", context: &frontCameraDeviceExposurePointOfInterestObserveContext)
-        backCameraVideoInput?.device.removeObserver(self,  forKeyPath: "exposurePointOfInterest", context: &backCameraDeviceExposurePointOfInterestObserveContext)
+        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "exposurePointOfInterest", context: &backCameraDeviceExposurePointOfInterestObserveContext)
 
         frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "videoZoomFactor", context: &frontCameraDeviceVideoZoomFactorObserveContext)
-        backCameraVideoInput?.device.removeObserver(self,  forKeyPath: "videoZoomFactor", context: &backCameraDeviceVideoZoomFactorObserveContext)
+        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "videoZoomFactor", context: &backCameraDeviceVideoZoomFactorObserveContext)
     }
 
-    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if context == &captureSessionRunningObserveContext {
             guard let isRunning = (change?[.newKey] as AnyObject?)?.boolValue else { return }
             onMainThread {
                 self.isRunningForObserve = isRunning
             }
-        }
-        else if context == &frontCameraDeviceAdjustingFocusObserveContext {
+        } else if context == &frontCameraDeviceAdjustingFocusObserveContext {
             // guard let isAdjustingFocus = (change?[.newKey] as AnyObject?)?.boolValue else { return }
             // print("[KVO] frontCameraDevice adjustingFocus: \(isAdjustingFocus)")
-        }
-        else if context == &backCameraDeviceAdjustingFocusObserveContext {
+        } else if context == &backCameraDeviceAdjustingFocusObserveContext {
             // guard let isAdjustingFocus = (change?[.newKey] as AnyObject?)?.boolValue else { return }
             // print("[KVO] backCameraDevice adjustingFocus: \(isAdjustingFocus)")
-        }
-        else if context == &frontCameraDeviceAdjustingExposureObserveContext {
+        } else if context == &frontCameraDeviceAdjustingExposureObserveContext {
             // guard let isAdjustingExposure = (change?[.newKey] as AnyObject?)?.boolValue else { return }
             // print("[KVO] frontCameraDevice adjustingExposure: \(isAdjustingExposure)")
-        }
-        else if context == &backCameraDeviceAdjustingExposureObserveContext {
+        } else if context == &backCameraDeviceAdjustingExposureObserveContext {
             // guard let isAdjustingExposure = (change?[.newKey] as AnyObject?)?.boolValue else { return }
             // print("[KVO] backCameraDevice adjustingExposure: \(isAdjustingExposure)")
-        }
-        else if context == &frontCameraDeviceAdjustingWhiteBalanceObserveContext {
+        } else if context == &frontCameraDeviceAdjustingWhiteBalanceObserveContext {
             // guard let isAdjustingWhiteBalance = (change?[.newKey] as AnyObject?)?.boolValue else { return }
             // print("[KVO] frontCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
             // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
-        }
-        else if context == &backCameraDeviceAdjustingWhiteBalanceObserveContext {
+        } else if context == &backCameraDeviceAdjustingWhiteBalanceObserveContext {
             // guard let isAdjustingWhiteBalance = (change?[.newKey] as AnyObject?)?.boolValue else { return }
             // print("[KVO] backCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
             // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
-        }
-        else if context == &frontCameraDeviceFocusPointOfInterestObserveContext {
+        } else if context == &frontCameraDeviceFocusPointOfInterestObserveContext {
             guard let focusPointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else { return }
             onMainThread {
                 self.focusPointOfInterestForObserve = focusPointOfInterest
             }
-        }
-        else if context == &backCameraDeviceFocusPointOfInterestObserveContext {
+        } else if context == &backCameraDeviceFocusPointOfInterestObserveContext {
             guard let focusPointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else { return }
             onMainThread {
                 self.focusPointOfInterestForObserve = focusPointOfInterest
             }
-        }
-        else if context == &frontCameraDeviceExposurePointOfInterestObserveContext {
+        } else if context == &frontCameraDeviceExposurePointOfInterestObserveContext {
             guard let exposurePointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else { return }
             onMainThread {
                 self.exposurePointOfInterestForObserve = exposurePointOfInterest
             }
-        }
-        else if context == &backCameraDeviceExposurePointOfInterestObserveContext {
+        } else if context == &backCameraDeviceExposurePointOfInterestObserveContext {
             guard let exposurePointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else { return }
             onMainThread {
                 self.exposurePointOfInterestForObserve = exposurePointOfInterest
             }
-        }
-        else if context == &frontCameraDeviceVideoZoomFactorObserveContext {
+        } else if context == &frontCameraDeviceVideoZoomFactorObserveContext {
             guard let videoZoomFactor = (change?[.newKey] as AnyObject?)?.doubleValue else { return }
             onMainThread {
                 self.zoomFactorForObserve = CGFloat(videoZoomFactor)
             }
-        }
-        else if context == &backCameraDeviceVideoZoomFactorObserveContext {
+        } else if context == &backCameraDeviceVideoZoomFactorObserveContext {
             guard let videoZoomFactor = (change?[.newKey] as AnyObject?)?.doubleValue else { return }
             onMainThread {
                 self.zoomFactorForObserve = CGFloat(videoZoomFactor)
             }
-        }
-        else {
+        } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
@@ -984,7 +966,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK:- SimpleCameraObservable
+    // MARK: - SimpleCameraObservable
 
     private var shouldSendIsRunningDidChange: Bool = false
     private var isRunningForObserve: Bool = false {
@@ -1048,7 +1030,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
 }
 
-// MARK:- AVCaptureVideoDataOutputSampleBufferDelegate
+// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 
 extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
 
@@ -1081,7 +1063,7 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
             if let silentCaptureImageCompletion = silentCaptureImageCompletion {
                 self.silentCaptureImageCompletion = nil
                 let image = createUIImage(from: sampleBuffer, limitSize: captureLimitSize, imageOrientation: preferredUIImageOrientationForVideoOutput)
-                let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: sampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String : Any]
+                let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: sampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String: Any]
                 isSilentCapturingImage = false
                 onMainThread {
                     silentCaptureImageCompletion(image, metadata)
@@ -1092,8 +1074,7 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
             for observer in videoOutputObservers.allObjects {
                 observer.simpleCameraVideoOutputObserve(captureOutput: output, didOutput: sampleBuffer, from: connection)
             }
-        }
-        else if output == audioOutput {
+        } else if output == audioOutput {
             // audioOutputObservers
             for observer in audioOutputObservers.allObjects {
                 observer.simpleCameraAudioOutputObserve(captureOutput: output, didOutput: sampleBuffer, from: connection)
@@ -1109,7 +1090,6 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
     }
 
 }
-
 
 extension SimpleCamera: AVCaptureFileOutputRecordingDelegate {
 
