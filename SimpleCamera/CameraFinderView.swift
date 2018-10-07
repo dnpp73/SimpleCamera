@@ -5,8 +5,10 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     // MARK: - IBOutlet
 
+    // swiftlint:disable private_outlet
     @IBOutlet private(set) public weak var captureVideoPreviewView: AVCaptureVideoPreviewView!
     @IBOutlet private(set) public weak var contentView: UIView!
+    // swiftlint:enable private_outlet
 
     @IBOutlet fileprivate weak var gridView: GridView!
     @IBOutlet fileprivate weak var focusIndicatorView: FocusIndicatorView!
@@ -51,13 +53,11 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
     }
 
     private var gridRatio: CGFloat? {
-        get {
-            if let input = captureVideoPreviewView?.captureVideoPreviewLayer.connection?.inputPorts.first?.input as? AVCaptureDeviceInput {
-                let d = CMVideoFormatDescriptionGetDimensions(input.device.activeFormat.formatDescription)
-                return CGFloat(d.width) / CGFloat(d.height)
-            } else {
-                return nil
-            }
+        if let input = captureVideoPreviewView?.captureVideoPreviewLayer.connection?.inputPorts.first?.input as? AVCaptureDeviceInput {
+            let d = CMVideoFormatDescriptionGetDimensions(input.device.activeFormat.formatDescription)
+            return CGFloat(d.width) / CGFloat(d.height)
+        } else {
+            return nil
         }
     }
 

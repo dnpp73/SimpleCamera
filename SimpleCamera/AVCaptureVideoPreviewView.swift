@@ -10,9 +10,7 @@ public final class AVCaptureVideoPreviewView: UIView {
     }
 
     public var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer {
-        get {
-            return layer as! AVCaptureVideoPreviewLayer // swiftlint:disable:this force_cast
-        }
+        return layer as! AVCaptureVideoPreviewLayer // swiftlint:disable:this force_cast
     }
 
     // MARK: - AVCaptureVideoPreviewLayer Property Bridge
@@ -36,9 +34,7 @@ public final class AVCaptureVideoPreviewView: UIView {
     }
 
     public var connection: AVCaptureConnection? {
-        get {
-            return captureVideoPreviewLayer.connection
-        }
+        return captureVideoPreviewLayer.connection
     }
 
     // MARK: - UIView

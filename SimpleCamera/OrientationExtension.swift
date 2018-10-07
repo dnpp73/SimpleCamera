@@ -35,77 +35,67 @@ public extension AVCaptureVideoOrientation {
 public extension UIImage.Orientation {
 
     public var mirrored: UIImage.Orientation {
-        get {
-            switch self {
-            case .up:            return .upMirrored
-            case .down:          return .downMirrored
-            case .left:          return .rightMirrored
-            case .right:         return .leftMirrored
-            case .upMirrored:    return .up
-            case .downMirrored:  return .down
-            case .leftMirrored:  return .right
-            case .rightMirrored: return .left
-            }
+        switch self {
+        case .up:            return .upMirrored
+        case .down:          return .downMirrored
+        case .left:          return .rightMirrored
+        case .right:         return .leftMirrored
+        case .upMirrored:    return .up
+        case .downMirrored:  return .down
+        case .leftMirrored:  return .right
+        case .rightMirrored: return .left
         }
     }
 
     public var rotateRight: UIImage.Orientation {
-        get {
-            switch self {
-            case .up:            return .right
-            case .down:          return .left
-            case .left:          return .up
-            case .right:         return .down
-            case .upMirrored:    return .rightMirrored
-            case .downMirrored:  return .leftMirrored
-            case .leftMirrored:  return .upMirrored
-            case .rightMirrored: return .downMirrored
-            }
+        switch self {
+        case .up:            return .right
+        case .down:          return .left
+        case .left:          return .up
+        case .right:         return .down
+        case .upMirrored:    return .rightMirrored
+        case .downMirrored:  return .leftMirrored
+        case .leftMirrored:  return .upMirrored
+        case .rightMirrored: return .downMirrored
         }
     }
 
     public var rotateLeft: UIImage.Orientation {
-        get {
-            switch self {
-            case .up:            return .left
-            case .down:          return .right
-            case .left:          return .down
-            case .right:         return .up
-            case .upMirrored:    return .leftMirrored
-            case .downMirrored:  return .rightMirrored
-            case .leftMirrored:  return .downMirrored
-            case .rightMirrored: return .upMirrored
-            }
+        switch self {
+        case .up:            return .left
+        case .down:          return .right
+        case .left:          return .down
+        case .right:         return .up
+        case .upMirrored:    return .leftMirrored
+        case .downMirrored:  return .rightMirrored
+        case .leftMirrored:  return .downMirrored
+        case .rightMirrored: return .upMirrored
         }
     }
 
     public var rotateUpsideDown: UIImage.Orientation {
-        get {
-            switch self {
-            case .up:            return .down
-            case .down:          return .up
-            case .left:          return .right
-            case .right:         return .left
-            case .upMirrored:    return .downMirrored
-            case .downMirrored:  return .upMirrored
-            case .leftMirrored:  return .rightMirrored
-            case .rightMirrored: return .leftMirrored
-            }
+        switch self {
+        case .up:            return .down
+        case .down:          return .up
+        case .left:          return .right
+        case .right:         return .left
+        case .upMirrored:    return .downMirrored
+        case .downMirrored:  return .upMirrored
+        case .leftMirrored:  return .rightMirrored
+        case .rightMirrored: return .leftMirrored
         }
     }
 
     public var swapLeftRight: UIImage.Orientation {
-        get {
-            switch self {
-            case .up:            return .up
-            case .down:          return .down
-            case .left:          return .right
-            case .right:         return .left
-            case .upMirrored:    return .upMirrored
-            case .downMirrored:  return .downMirrored
-            case .leftMirrored:  return .rightMirrored
-            case .rightMirrored: return .leftMirrored
-            }
+        switch self {
+        case .up:            return .up
+        case .down:          return .down
+        case .left:          return .right
+        case .right:         return .left
+        case .upMirrored:    return .upMirrored
+        case .downMirrored:  return .downMirrored
+        case .leftMirrored:  return .rightMirrored
+        case .rightMirrored: return .leftMirrored
         }
     }
 

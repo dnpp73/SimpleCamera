@@ -5,23 +5,19 @@ public enum GridType: Equatable {
     case equalDistance(vertical: UInt, horizontal: UInt)
 
     public static var equalDistance3x3: GridType {
-        get {
-            return .equalDistance(vertical: 2, horizontal: 2)
-        }
+        return .equalDistance(vertical: 2, horizontal: 2)
     }
 
     public var next: GridType {
-        get {
-            switch self {
-            case .none:
-                return .equalDistance3x3
-            case .equalDistance(_, _):
-                return .none
-            }
+        switch self {
+        case .none:
+            return .equalDistance3x3
+        case .equalDistance(_, _):
+            return .none
         }
     }
 
-    public static func ==(lhs: GridType, rhs: GridType) -> Bool {
+    public static func == (lhs: GridType, rhs: GridType) -> Bool {
         switch (lhs, rhs) {
         case (.none, .none):
             return true

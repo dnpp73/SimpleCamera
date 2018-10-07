@@ -89,8 +89,12 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     public func setPhotoMode() {
         sessionQueue.sync {
-            guard isRecordingMovie == false else { return }
-            guard mode != .photo else { return }
+            guard isRecordingMovie == false else {
+                return
+            }
+            guard mode != .photo else {
+                return
+            }
 
             captureSession.beginConfiguration() // defer より前の段階で commit したい
 
@@ -129,8 +133,12 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     public func setMovieMode() {
         sessionQueue.sync {
-            guard isRecordingMovie == false else { return }
-            guard mode != .movie else { return }
+            guard isRecordingMovie == false else {
+                return
+            }
+            guard mode != .movie else {
+                return
+            }
 
             captureSession.beginConfiguration() // defer より前の段階で commit したい
 
@@ -196,9 +204,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     // MARK: Capture Image
 
     public var isCapturingImage: Bool {
-        get {
-            return imageOutput.isCapturingStillImage || isSilentCapturingImage
-        }
+        return imageOutput.isCapturingStillImage || isSilentCapturingImage
     }
 
     public var captureLimitSize: CGSize = .zero
@@ -222,7 +228,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
 
         sessionQueue.async {
-            let captureImageConnection: AVCaptureConnection = self.imageOutput.connection(with: .video)!
+            let captureImageConnection: AVCaptureConnection = self.imageOutput.connection(with: .video)! // swiftlint:disable:this force_unwrapping
             // captureStillImageAsynchronously であれば撮影直前に connection の videoOrientation を弄っても問題なさそう
             self.captureSession.beginConfiguration()
             let videoOrientation: AVCaptureVideoOrientation
@@ -388,7 +394,9 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
         set {
             lockCurrentCameraDeviceAndConfigure {
-                guard let lockedDevice = self.currentDevice else { return }
+                guard let lockedDevice = self.currentDevice else {
+                    return
+                }
                 let minZoomFactor = CGFloat(1.0)
                 let maxZoomFactor = self.maxZoomFactor
                 let validateZoomFactor = min(max(newValue, minZoomFactor), maxZoomFactor)
@@ -406,28 +414,26 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     public var maxZoomFactor: CGFloat {
-        get {
-            guard let videoMaxZoomFactor = currentDevice?.activeFormat.videoMaxZoomFactor else {
-                return 1.0
-            }
-            return min(zoomFactorLimit, videoMaxZoomFactor)
+        guard let videoMaxZoomFactor = currentDevice?.activeFormat.videoMaxZoomFactor else {
+            return 1.0
         }
+        return min(zoomFactorLimit, videoMaxZoomFactor)
     }
 
     // MARK: Focus, Exposure
 
     public var focusPointOfInterest: CGPoint {
-        get {
-            guard let device = currentDevice else {
-                return CGPoint.zero
-            }
-            return device.focusPointOfInterest
+        guard let device = currentDevice else {
+            return CGPoint.zero
         }
+        return device.focusPointOfInterest
     }
 
     public func focus(at devicePoint: CGPoint, focusMode: AVCaptureDevice.FocusMode, monitorSubjectAreaChange: Bool) {
         lockCurrentCameraDeviceAndConfigure(sync: false) {
-            guard let device = self.currentDevice else { return }
+            guard let device = self.currentDevice else {
+                return
+            }
             if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(focusMode) {
                 device.focusPointOfInterest = devicePoint
                 device.focusMode = focusMode
@@ -437,17 +443,17 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     public var exposurePointOfInterest: CGPoint {
-        get {
-            guard let device = currentDevice else {
-                return CGPoint.zero
-            }
-            return device.exposurePointOfInterest
+        guard let device = currentDevice else {
+            return CGPoint.zero
         }
+        return device.exposurePointOfInterest
     }
 
     public func exposure(at devicePoint: CGPoint, exposureMode: AVCaptureDevice.ExposureMode, monitorSubjectAreaChange: Bool) {
         lockCurrentCameraDeviceAndConfigure(sync: false) {
-            guard let device = self.currentDevice else { return }
+            guard let device = self.currentDevice else {
+                return
+            }
             if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(exposureMode) {
                 device.exposurePointOfInterest = devicePoint
                 device.exposureMode = exposureMode
@@ -458,7 +464,9 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     public func focusAndExposure(at devicePoint: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, monitorSubjectAreaChange: Bool) {
         lockCurrentCameraDeviceAndConfigure(sync: false) {
-            guard let device = self.currentDevice else { return }
+            guard let device = self.currentDevice else {
+                return
+            }
             if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(focusMode) {
                 device.focusPointOfInterest = devicePoint
                 device.focusMode = focusMode
@@ -472,7 +480,9 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     public func resetFocusAndExposure() {
-        guard let device = self.currentDevice else { return }
+        guard let device = self.currentDevice else {
+            return
+        }
         lockCurrentCameraDeviceAndConfigure(sync: false) {
             let center = CGPoint(x: 0.5, y: 0.5)
             if device.isFocusPointOfInterestSupported {
@@ -551,12 +561,10 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     public var isCurrentInputFront: Bool {
-        get {
-            guard let device = currentDevice else {
-                return false
-            }
-            return device.position == .front
+        guard let device = currentDevice else {
+            return false
         }
+        return device.position == .front
     }
 
     public func switchCameraInputToFront() {
@@ -569,12 +577,10 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     public var isCurrentInputBack: Bool {
-        get {
-            guard let device = currentDevice else {
-                return false
-            }
-            return device.position == .back
+        guard let device = currentDevice else {
+            return false
         }
+        return device.position == .back
     }
 
     public func switchCameraInputToBack() {
@@ -859,7 +865,9 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if context == &captureSessionRunningObserveContext {
-            guard let isRunning = (change?[.newKey] as AnyObject?)?.boolValue else { return }
+            guard let isRunning = (change?[.newKey] as AnyObject?)?.boolValue else {
+                return
+            }
             onMainThread {
                 self.isRunningForObserve = isRunning
             }
@@ -884,32 +892,44 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // print("[KVO] backCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
             // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
         } else if context == &frontCameraDeviceFocusPointOfInterestObserveContext {
-            guard let focusPointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else { return }
+            guard let focusPointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else {
+                return
+            }
             onMainThread {
                 self.focusPointOfInterestForObserve = focusPointOfInterest
             }
         } else if context == &backCameraDeviceFocusPointOfInterestObserveContext {
-            guard let focusPointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else { return }
+            guard let focusPointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else {
+                return
+            }
             onMainThread {
                 self.focusPointOfInterestForObserve = focusPointOfInterest
             }
         } else if context == &frontCameraDeviceExposurePointOfInterestObserveContext {
-            guard let exposurePointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else { return }
+            guard let exposurePointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else {
+                return
+            }
             onMainThread {
                 self.exposurePointOfInterestForObserve = exposurePointOfInterest
             }
         } else if context == &backCameraDeviceExposurePointOfInterestObserveContext {
-            guard let exposurePointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else { return }
+            guard let exposurePointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else {
+                return
+            }
             onMainThread {
                 self.exposurePointOfInterestForObserve = exposurePointOfInterest
             }
         } else if context == &frontCameraDeviceVideoZoomFactorObserveContext {
-            guard let videoZoomFactor = (change?[.newKey] as AnyObject?)?.doubleValue else { return }
+            guard let videoZoomFactor = (change?[.newKey] as AnyObject?)?.doubleValue else {
+                return
+            }
             onMainThread {
                 self.zoomFactorForObserve = CGFloat(videoZoomFactor)
             }
         } else if context == &backCameraDeviceVideoZoomFactorObserveContext {
-            guard let videoZoomFactor = (change?[.newKey] as AnyObject?)?.doubleValue else { return }
+            guard let videoZoomFactor = (change?[.newKey] as AnyObject?)?.doubleValue else {
+                return
+            }
             onMainThread {
                 self.zoomFactorForObserve = CGFloat(videoZoomFactor)
             }
@@ -1035,25 +1055,23 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
 
     public var preferredUIImageOrientationForVideoOutput: UIImage.Orientation {
-        get {
-            guard isRunning else {
-                return .up
-            }
-
-            // 撮影直前に connection の videoOrientation を弄ると実用的に問題があるので、UIImageOrientation をここで放り込む実装が現実的
-            // caputureVideoConnection の videoOrientation は .up に固定して初期化しているはずなので、その前提で進める。
-            let imageOrientation: UIImage.Orientation
-            let captureVideoOrientation = !isFollowDeviceOrientationWhenCapture ? .portrait : OrientationDetector.shared.captureVideoOrientation
-            let i = UIImage.Orientation(captureVideoOrientation: captureVideoOrientation)
-            if let connection = videoOutput.connection(with: .video), connection.isFrontCameraDevice {
-                // Front Camera のときはちょっとややこしい
-                imageOrientation = isMirroredImageIfFrontCamera ? i.swapLeftRight.mirrored : i.swapLeftRight
-            } else {
-                // Back Camera のときはそのまま使う
-                imageOrientation = i
-            }
-            return imageOrientation
+        guard isRunning else {
+            return .up
         }
+
+        // 撮影直前に connection の videoOrientation を弄ると実用的に問題があるので、UIImageOrientation をここで放り込む実装が現実的
+        // caputureVideoConnection の videoOrientation は .up に固定して初期化しているはずなので、その前提で進める。
+        let imageOrientation: UIImage.Orientation
+        let captureVideoOrientation = !isFollowDeviceOrientationWhenCapture ? .portrait : OrientationDetector.shared.captureVideoOrientation
+        let i = UIImage.Orientation(captureVideoOrientation: captureVideoOrientation)
+        if let connection = videoOutput.connection(with: .video), connection.isFrontCameraDevice {
+            // Front Camera のときはちょっとややこしい
+            imageOrientation = isMirroredImageIfFrontCamera ? i.swapLeftRight.mirrored : i.swapLeftRight
+        } else {
+            // Back Camera のときはそのまま使う
+            imageOrientation = i
+        }
+        return imageOrientation
     }
 
     // AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate で同じ名前のメソッドという…。
@@ -1083,7 +1101,9 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
     }
 
     public func captureOutput(_ captureOutput: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard captureOutput == videoOutput else { return }
+        guard captureOutput == videoOutput else {
+            return
+        }
         for observer in videoOutputObservers.allObjects {
             observer.simpleCameraVideoOutputObserve(captureOutput: captureOutput, didDrop: sampleBuffer, from: connection)
         }

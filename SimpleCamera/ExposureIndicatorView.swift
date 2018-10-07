@@ -9,16 +9,12 @@ internal final class ExposureIndicatorView: UIView {
     private let fadeTime: TimeInterval = 0.3
     private let afterDelay: TimeInterval = 2.0
     private var resetBounds: CGRect {
-        get {
-            let shortSide = min(bounds.width, bounds.height) / 3.0 * 0.85
-            return CGRect(x: 0.0, y: 0.0, width: shortSide, height: shortSide)
-        }
+        let shortSide = min(bounds.width, bounds.height) / 3.0 * 0.85
+        return CGRect(x: 0.0, y: 0.0, width: shortSide, height: shortSide)
     }
     private var exposureBounds: CGRect {
-        get {
-            let shortSide = min(bounds.width, bounds.height) / 3.0 * 0.7
-            return CGRect(x: 0.0, y: 0.0, width: shortSide, height: shortSide)
-        }
+        let shortSide = min(bounds.width, bounds.height) / 3.0 * 0.7
+        return CGRect(x: 0.0, y: 0.0, width: shortSide, height: shortSide)
     }
 
     internal func exposureResetAnimation(animated: Bool = true) {

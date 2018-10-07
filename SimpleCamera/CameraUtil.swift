@@ -2,10 +2,8 @@ import Foundation
 import AVFoundation
 
 internal func findCameraDevice(position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-    for device in AVCaptureDevice.devices() {
-        if device.position == position {
-            return device
-        }
+    for device in AVCaptureDevice.devices() where device.position == position {
+        return device
     }
     return nil
 }
