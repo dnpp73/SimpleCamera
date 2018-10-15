@@ -359,7 +359,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     // MARK: Camera Setting
 
-    // TODO : ズームだけ実装した。ホワイトバランスや ISO やシャッタースピードの調整は後で lockCurrentCameraDeviceAndConfigure を使って作る。
+    #warning("ズームだけ実装した。ホワイトバランスや ISO やシャッタースピードの調整は後で lockCurrentCameraDeviceAndConfigure を使って作る。")
 
     private var currentInput: AVCaptureDeviceInput? {
         guard isConfigured else {
@@ -947,7 +947,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     @objc private func sessionRuntimeError(notification: Notification) {
-        // TODO
+        #warning("TODO")
         /*
         guard let errorValue = notification.userInfo?[AVCaptureSessionErrorKey] as? NSError else {
             return
@@ -962,7 +962,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     @objc private func sessionWasInterrupted(notification: Notification) {
-        // TODO
+        #warning("TODO")
         /*
         guard #available(iOS 9.0, *) else {
             return

@@ -14,7 +14,7 @@ import AVFoundation
 
     func simpleCameraDidSwitchCameraInput(simpleCamera: SimpleCamera)
 
-    // TODO
+    #warning("TODO")
 //    func simpleCameraSessionRuntimeError(simpleCamera: SimpleCamera, error: AVError)
 //    @available(iOS 9.0, *) func simpleCameraSessionWasInterrupted(simpleCamera: SimpleCamera, reason: AVCaptureSession.InterruptionReason)
     func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera)
