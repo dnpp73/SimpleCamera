@@ -801,40 +801,106 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     // MARK: KVO and Notifications
 
-    private var captureSessionRunningObserveContext = 0
-
-    private var frontCameraDeviceAdjustingFocusObserveContext = 0
-    private var backCameraDeviceAdjustingFocusObserveContext = 0
-    private var frontCameraDeviceAdjustingExposureObserveContext = 0
-    private var backCameraDeviceAdjustingExposureObserveContext = 0
-    private var frontCameraDeviceAdjustingWhiteBalanceObserveContext = 0
-    private var backCameraDeviceAdjustingWhiteBalanceObserveContext = 0
-
-    private var frontCameraDeviceFocusPointOfInterestObserveContext = 0
-    private var backCameraDeviceFocusPointOfInterestObserveContext = 0
-    private var frontCameraDeviceExposurePointOfInterestObserveContext = 0
-    private var backCameraDeviceExposurePointOfInterestObserveContext = 0
-
-    private var frontCameraDeviceVideoZoomFactorObserveContext = 0
-    private var backCameraDeviceVideoZoomFactorObserveContext = 0
+    private var keyValueObservations: [NSKeyValueObservation] = []
 
     private func addObservers() {
-        captureSession.addObserver(self, forKeyPath: "running", options: .new, context: &captureSessionRunningObserveContext)
-
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingFocus", options: .new, context: &frontCameraDeviceAdjustingFocusObserveContext)
-        backCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingFocus", options: .new, context: &backCameraDeviceAdjustingFocusObserveContext)
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingExposure", options: .new, context: &frontCameraDeviceAdjustingExposureObserveContext)
-        backCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingExposure", options: .new, context: &backCameraDeviceAdjustingExposureObserveContext)
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingWhiteBalance", options: .new, context: &frontCameraDeviceAdjustingWhiteBalanceObserveContext)
-        backCameraVideoInput?.device.addObserver(self, forKeyPath: "adjustingWhiteBalance", options: .new, context: &backCameraDeviceAdjustingWhiteBalanceObserveContext)
-
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "focusPointOfInterest", options: .new, context: &frontCameraDeviceFocusPointOfInterestObserveContext)
-        backCameraVideoInput?.device.addObserver(self, forKeyPath: "focusPointOfInterest", options: .new, context: &backCameraDeviceFocusPointOfInterestObserveContext)
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "exposurePointOfInterest", options: .new, context: &frontCameraDeviceExposurePointOfInterestObserveContext)
-        backCameraVideoInput?.device.addObserver(self, forKeyPath: "exposurePointOfInterest", options: .new, context: &backCameraDeviceExposurePointOfInterestObserveContext)
-
-        frontCameraVideoInput?.device.addObserver(self, forKeyPath: "videoZoomFactor", options: .new, context: &frontCameraDeviceVideoZoomFactorObserveContext)
-        backCameraVideoInput?.device.addObserver(self, forKeyPath: "videoZoomFactor", options: .new, context: &backCameraDeviceVideoZoomFactorObserveContext)
+        #warning("kaku")
+        var observations: [NSKeyValueObservation?] = []
+        observations.append(captureSession.observe(\.isRunning, options: .new, changeHandler: { (captureSession, changes) in
+            guard let isRunning = changes.newValue else {
+                return
+            }
+            onMainThread {
+                self.isRunningForObserve = isRunning
+            }
+        }))
+        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingFocus, options: .new, changeHandler: { (device, changes) in
+            guard let isAdjustingFocus = changes.newValue else {
+                return
+            }
+            print("[KVO] frontCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
+        }))
+        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingFocus, options: .new, changeHandler: { (device, changes) in
+            guard let isAdjustingFocus = changes.newValue else {
+                return
+            }
+            print("[KVO] backCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
+        }))
+        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingExposure, options: .new, changeHandler: { (device, changes) in
+            guard let isAdjustingExposure = changes.newValue else {
+                return
+            }
+            print("[KVO] frontCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
+        }))
+        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingExposure, options: .new, changeHandler: { (device, changes) in
+            guard let isAdjustingExposure = changes.newValue else {
+                return
+            }
+            print("[KVO] backCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
+        }))
+        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingWhiteBalance, options: .new, changeHandler: { (device, changes) in
+            guard let isAdjustingWhiteBalance = changes.newValue else {
+                return
+            }
+            print("[KVO] frontCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
+            // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
+        }))
+        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingWhiteBalance, options: .new, changeHandler: { (device, changes) in
+            guard let isAdjustingWhiteBalance = changes.newValue else {
+                return
+            }
+            print("[KVO] backCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
+            // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
+        }))
+        observations.append(frontCameraVideoInput?.device.observe(\.focusPointOfInterest, options: .new, changeHandler: { (device, changes) in
+            guard let focusPointOfInterest = changes.newValue else {
+                return
+            }
+            onMainThread {
+                self.focusPointOfInterestForObserve = focusPointOfInterest
+            }
+        }))
+        observations.append(backCameraVideoInput?.device.observe(\.focusPointOfInterest, options: .new, changeHandler: { (device, changes) in
+            guard let focusPointOfInterest = changes.newValue else {
+                return
+            }
+            onMainThread {
+                self.focusPointOfInterestForObserve = focusPointOfInterest
+            }
+        }))
+        observations.append(frontCameraVideoInput?.device.observe(\.exposurePointOfInterest, options: .new, changeHandler: { (device, changes) in
+            guard let exposurePointOfInterest = changes.newValue else {
+                return
+            }
+            onMainThread {
+                self.exposurePointOfInterestForObserve = exposurePointOfInterest
+            }
+        }))
+        observations.append(backCameraVideoInput?.device.observe(\.exposurePointOfInterest, options: .new, changeHandler: { (device, changes) in
+            guard let exposurePointOfInterest = changes.newValue else {
+                return
+            }
+            onMainThread {
+                self.exposurePointOfInterestForObserve = exposurePointOfInterest
+            }
+        }))
+        observations.append(frontCameraVideoInput?.device.observe(\.videoZoomFactor, options: .new, changeHandler: { (device, changes) in
+            guard let videoZoomFactor = changes.newValue else {
+                return
+            }
+            onMainThread {
+                self.zoomFactorForObserve = videoZoomFactor
+            }
+        }))
+        observations.append(backCameraVideoInput?.device.observe(\.videoZoomFactor, options: .new, changeHandler: { (device, changes) in
+            guard let videoZoomFactor = changes.newValue else {
+                return
+            }
+            onMainThread {
+                self.zoomFactorForObserve = videoZoomFactor
+            }
+        }))
+        keyValueObservations = observations.compactMap({ $0 })
 
         NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: Notification.Name("AVCaptureDeviceSubjectAreaDidChangeNotification"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: Notification.Name("AVCaptureSessionRuntimeErrorNotification"), object: captureSession)
@@ -844,98 +910,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     private func removeObservers() {
         NotificationCenter.default.removeObserver(self)
-
-        captureSession.removeObserver(self, forKeyPath: "running", context: &captureSessionRunningObserveContext)
-
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingFocus", context: &frontCameraDeviceAdjustingFocusObserveContext)
-        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingFocus", context: &backCameraDeviceAdjustingFocusObserveContext)
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingExposure", context: &frontCameraDeviceAdjustingExposureObserveContext)
-        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingExposure", context: &backCameraDeviceAdjustingExposureObserveContext)
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingWhiteBalance", context: &frontCameraDeviceAdjustingWhiteBalanceObserveContext)
-        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "adjustingWhiteBalance", context: &backCameraDeviceAdjustingWhiteBalanceObserveContext)
-
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "focusPointOfInterest", context: &frontCameraDeviceFocusPointOfInterestObserveContext)
-        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "focusPointOfInterest", context: &backCameraDeviceFocusPointOfInterestObserveContext)
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "exposurePointOfInterest", context: &frontCameraDeviceExposurePointOfInterestObserveContext)
-        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "exposurePointOfInterest", context: &backCameraDeviceExposurePointOfInterestObserveContext)
-
-        frontCameraVideoInput?.device.removeObserver(self, forKeyPath: "videoZoomFactor", context: &frontCameraDeviceVideoZoomFactorObserveContext)
-        backCameraVideoInput?.device.removeObserver(self, forKeyPath: "videoZoomFactor", context: &backCameraDeviceVideoZoomFactorObserveContext)
-    }
-
-    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if context == &captureSessionRunningObserveContext {
-            guard let isRunning = (change?[.newKey] as AnyObject?)?.boolValue else {
-                return
-            }
-            onMainThread {
-                self.isRunningForObserve = isRunning
-            }
-        } else if context == &frontCameraDeviceAdjustingFocusObserveContext {
-            // guard let isAdjustingFocus = (change?[.newKey] as AnyObject?)?.boolValue else { return }
-            // print("[KVO] frontCameraDevice adjustingFocus: \(isAdjustingFocus)")
-        } else if context == &backCameraDeviceAdjustingFocusObserveContext {
-            // guard let isAdjustingFocus = (change?[.newKey] as AnyObject?)?.boolValue else { return }
-            // print("[KVO] backCameraDevice adjustingFocus: \(isAdjustingFocus)")
-        } else if context == &frontCameraDeviceAdjustingExposureObserveContext {
-            // guard let isAdjustingExposure = (change?[.newKey] as AnyObject?)?.boolValue else { return }
-            // print("[KVO] frontCameraDevice adjustingExposure: \(isAdjustingExposure)")
-        } else if context == &backCameraDeviceAdjustingExposureObserveContext {
-            // guard let isAdjustingExposure = (change?[.newKey] as AnyObject?)?.boolValue else { return }
-            // print("[KVO] backCameraDevice adjustingExposure: \(isAdjustingExposure)")
-        } else if context == &frontCameraDeviceAdjustingWhiteBalanceObserveContext {
-            // guard let isAdjustingWhiteBalance = (change?[.newKey] as AnyObject?)?.boolValue else { return }
-            // print("[KVO] frontCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
-            // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
-        } else if context == &backCameraDeviceAdjustingWhiteBalanceObserveContext {
-            // guard let isAdjustingWhiteBalance = (change?[.newKey] as AnyObject?)?.boolValue else { return }
-            // print("[KVO] backCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
-            // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
-        } else if context == &frontCameraDeviceFocusPointOfInterestObserveContext {
-            guard let focusPointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else {
-                return
-            }
-            onMainThread {
-                self.focusPointOfInterestForObserve = focusPointOfInterest
-            }
-        } else if context == &backCameraDeviceFocusPointOfInterestObserveContext {
-            guard let focusPointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else {
-                return
-            }
-            onMainThread {
-                self.focusPointOfInterestForObserve = focusPointOfInterest
-            }
-        } else if context == &frontCameraDeviceExposurePointOfInterestObserveContext {
-            guard let exposurePointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else {
-                return
-            }
-            onMainThread {
-                self.exposurePointOfInterestForObserve = exposurePointOfInterest
-            }
-        } else if context == &backCameraDeviceExposurePointOfInterestObserveContext {
-            guard let exposurePointOfInterest = (change?[.newKey] as AnyObject?)?.cgPointValue else {
-                return
-            }
-            onMainThread {
-                self.exposurePointOfInterestForObserve = exposurePointOfInterest
-            }
-        } else if context == &frontCameraDeviceVideoZoomFactorObserveContext {
-            guard let videoZoomFactor = (change?[.newKey] as AnyObject?)?.doubleValue else {
-                return
-            }
-            onMainThread {
-                self.zoomFactorForObserve = CGFloat(videoZoomFactor)
-            }
-        } else if context == &backCameraDeviceVideoZoomFactorObserveContext {
-            guard let videoZoomFactor = (change?[.newKey] as AnyObject?)?.doubleValue else {
-                return
-            }
-            onMainThread {
-                self.zoomFactorForObserve = CGFloat(videoZoomFactor)
-            }
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
+        keyValueObservations.removeAll() // NSKeyValueObservation の deinit を発行させるだけで良い。
     }
 
     @objc private func subjectAreaDidChange(notification: Notification) {
