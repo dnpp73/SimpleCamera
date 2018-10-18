@@ -12,7 +12,7 @@
 		EA5C8B7C1EA73A6A00E5E016 /* CIContext+Workaround.m in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B7A1EA73A6A00E5E016 /* CIContext+Workaround.m */; };
 		EA5C8B821EA73B8400E5E016 /* CameraUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B7E1EA73B8400E5E016 /* CameraUtil.swift */; };
 		EA5C8B831EA73B8400E5E016 /* ImageUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B7F1EA73B8400E5E016 /* ImageUtil.swift */; };
-		EA5C8B841EA73B8400E5E016 /* OnMainThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B801EA73B8400E5E016 /* OnMainThread.swift */; };
+		EA5C8B841EA73B8400E5E016 /* MainThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B801EA73B8400E5E016 /* MainThread.swift */; };
 		EA5C8B851EA73B8400E5E016 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B811EA73B8400E5E016 /* UIImageExtension.swift */; };
 		EA5C8B8A1EA73BCC00E5E016 /* OrientationDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B871EA73BCC00E5E016 /* OrientationDetector.swift */; };
 		EA5C8B8B1EA73BCC00E5E016 /* OrientationDetectorInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B881EA73BCC00E5E016 /* OrientationDetectorInterface.swift */; };
@@ -39,7 +39,7 @@
 		EA5C8B7A1EA73A6A00E5E016 /* CIContext+Workaround.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CIContext+Workaround.m"; sourceTree = "<group>"; };
 		EA5C8B7E1EA73B8400E5E016 /* CameraUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraUtil.swift; sourceTree = "<group>"; };
 		EA5C8B7F1EA73B8400E5E016 /* ImageUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageUtil.swift; sourceTree = "<group>"; };
-		EA5C8B801EA73B8400E5E016 /* OnMainThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnMainThread.swift; sourceTree = "<group>"; };
+		EA5C8B801EA73B8400E5E016 /* MainThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThread.swift; sourceTree = "<group>"; };
 		EA5C8B811EA73B8400E5E016 /* UIImageExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		EA5C8B871EA73BCC00E5E016 /* OrientationDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrientationDetector.swift; sourceTree = "<group>"; };
 		EA5C8B881EA73BCC00E5E016 /* OrientationDetectorInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrientationDetectorInterface.swift; sourceTree = "<group>"; };
@@ -118,7 +118,7 @@
 		EA5C8B7D1EA73B6600E5E016 /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				EA5C8B801EA73B8400E5E016 /* OnMainThread.swift */,
+				EA5C8B801EA73B8400E5E016 /* MainThread.swift */,
 				EA5C8B7E1EA73B8400E5E016 /* CameraUtil.swift */,
 				EA5C8B7F1EA73B8400E5E016 /* ImageUtil.swift */,
 				EA5C8B811EA73B8400E5E016 /* UIImageExtension.swift */,
@@ -301,7 +301,7 @@
 				EA5C8B851EA73B8400E5E016 /* UIImageExtension.swift in Sources */,
 				EA5C8B8A1EA73BCC00E5E016 /* OrientationDetector.swift in Sources */,
 				EA5C8B8C1EA73BCC00E5E016 /* OrientationExtension.swift in Sources */,
-				EA5C8B841EA73B8400E5E016 /* OnMainThread.swift in Sources */,
+				EA5C8B841EA73B8400E5E016 /* MainThread.swift in Sources */,
 				EA5C8BA11EA73CDF00E5E016 /* CameraFinderView.swift in Sources */,
 				EA5C8BA31EA73CDF00E5E016 /* CameraFinderViewInterface.swift in Sources */,
 				EA5C8B9A1EA73C9200E5E016 /* GridView.swift in Sources */,

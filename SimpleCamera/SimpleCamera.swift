@@ -242,13 +242,13 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
             self.imageOutput.captureStillImageAsynchronously(from: captureImageConnection) { (imageDataBuffer, error) -> Void in
                 guard let imageDataBuffer = imageDataBuffer, let data = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataBuffer) else {
-                    onMainThread {
+                    onMainThreadAsync {
                         completion(nil, nil)
                     }
                     return
                 }
                 guard let rawImage = UIImage(data: data) else {
-                    onMainThread {
+                    onMainThreadAsync {
                         completion(nil, nil)
                     }
                     return
@@ -259,7 +259,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                     scaledImage = rawImage
                 } else {
                     guard let c = CIImage(image: rawImage), let i = createUIImage(from: c, limitSize: self.captureLimitSize, imageOrientation: rawImage.imageOrientation) else {
-                        onMainThread {
+                        onMainThreadAsync {
                             completion(nil, nil)
                         }
                         return
@@ -270,7 +270,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: imageDataBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String: Any]
                 let mirrored = self.isMirroredImageIfFrontCamera && captureImageConnection.isFrontCameraDevice
                 let image = mirrored ? scaledImage.mirrored : scaledImage
-                onMainThread {
+                onMainThreadAsync {
                     completion(image, metadata)
                 }
             }
@@ -506,7 +506,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 device.exposureMode = exposureMode
             }
             device.isSubjectAreaChangeMonitoringEnabled = true
-            onMainThread {
+            onMainThreadAsync {
                 for observer in self.observers.allObjects {
                     observer.simpleCameraDidResetFocusAndExposure(simpleCamera: self)
                 }
@@ -551,7 +551,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
         if switchSucceed {
             // 内部で sessionQueue.async してるので外に出しておきたい
-            onMainThread {
+            onMainThreadAsync {
                 for observer in self.observers.allObjects {
                     observer.simpleCameraDidSwitchCameraInput(simpleCamera: self)
                 }
@@ -810,7 +810,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let isRunning = changes.newValue else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.isRunningForObserve = isRunning
             }
         }))
@@ -856,7 +856,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let focusPointOfInterest = changes.newValue else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.focusPointOfInterestForObserve = focusPointOfInterest
             }
         }))
@@ -864,7 +864,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let focusPointOfInterest = changes.newValue else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.focusPointOfInterestForObserve = focusPointOfInterest
             }
         }))
@@ -872,7 +872,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let exposurePointOfInterest = changes.newValue else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.exposurePointOfInterestForObserve = exposurePointOfInterest
             }
         }))
@@ -880,7 +880,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let exposurePointOfInterest = changes.newValue else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.exposurePointOfInterestForObserve = exposurePointOfInterest
             }
         }))
@@ -888,7 +888,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let videoZoomFactor = changes.newValue else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.zoomFactorForObserve = videoZoomFactor
             }
         }))
@@ -896,7 +896,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let videoZoomFactor = changes.newValue else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.zoomFactorForObserve = videoZoomFactor
             }
         }))
@@ -928,7 +928,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             return
         }
         let error = AVError(_nsError: errorValue)
-        onMainThread {
+        onMainThreadAsync {
             for observer in self.observers.allObjects {
                 observer.simpleCameraSessionRuntimeError(simpleCamera: self, error: error)
             }
@@ -945,7 +945,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?, let reasonIntegerValue = userInfoValue.integerValue, let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue) else {
             return
         }
-        onMainThread {
+        onMainThreadAsync {
             for observer in self.observers.allObjects {
                 observer.simpleCameraSessionWasInterrupted(simpleCamera: self, reason: reason)
             }
@@ -954,7 +954,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     @objc private func sessionInterruptionEnded(notification: Notification) {
-        onMainThread {
+        onMainThreadAsync {
             for observer in self.observers.allObjects {
                 observer.simpleCameraSessionInterruptionEnded(simpleCamera: self)
             }
@@ -1058,7 +1058,7 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
                 let image = createUIImage(from: sampleBuffer, limitSize: captureLimitSize, imageOrientation: preferredUIImageOrientationForVideoOutput)
                 let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: sampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String: Any]
                 isSilentCapturingImage = false
-                onMainThread {
+                onMainThreadAsync {
                     silentCaptureImageCompletion(image, metadata)
                 }
             }
