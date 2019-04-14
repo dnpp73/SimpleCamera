@@ -153,6 +153,8 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
             SimpleCamera.shared.resetFocusAndExposure()
         case .possible:
             break
+        @unknown default:
+            break
         }
     }
 

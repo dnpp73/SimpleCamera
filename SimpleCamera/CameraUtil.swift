@@ -22,6 +22,8 @@ extension AVCaptureConnection {
             return false
         case .unspecified:
             return false
+        @unknown default:
+            return false
         }
     }
 }

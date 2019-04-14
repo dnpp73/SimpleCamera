@@ -3,7 +3,7 @@ import AVFoundation
 
 public extension AVCaptureVideoOrientation {
 
-    public init?(deviceOrientation: UIDeviceOrientation) {
+    init?(deviceOrientation: UIDeviceOrientation) {
         // UIDeviceOrientation.landscapeLeft  と AVCaptureVideoOrientation.landscapeRight
         // UIDeviceOrientation.landscapeRight と AVCaptureVideoOrientation.landscapeLeft
         // がそれぞれ対応するのでややこしい。ドキュメントと定義部分のコメントを読むとホームボタン基準でどうなってるかが書かれていて分かりやすい。
@@ -20,7 +20,7 @@ public extension AVCaptureVideoOrientation {
     // Note that UIInterfaceOrientationLandscapeLeft is equal to UIDeviceOrientationLandscapeRight (and vice versa).
     // This is because rotating the device to the left requires rotating the content to the right.
     // とあるので、Left と Right の対応はこれで良い。
-    public init?(interfaceOrientation: UIInterfaceOrientation) {
+    init?(interfaceOrientation: UIInterfaceOrientation) {
         switch interfaceOrientation {
         case .portrait:           self = .portrait
         case .portraitUpsideDown: self = .portraitUpsideDown
@@ -34,7 +34,7 @@ public extension AVCaptureVideoOrientation {
 
 public extension UIImage.Orientation {
 
-    public var mirrored: UIImage.Orientation {
+    var mirrored: UIImage.Orientation {
         switch self {
         case .up:            return .upMirrored
         case .down:          return .downMirrored
@@ -44,10 +44,11 @@ public extension UIImage.Orientation {
         case .downMirrored:  return .down
         case .leftMirrored:  return .right
         case .rightMirrored: return .left
+        @unknown default:    fatalError("unknown UIImage.Orientation")
         }
     }
 
-    public var rotateRight: UIImage.Orientation {
+    var rotateRight: UIImage.Orientation {
         switch self {
         case .up:            return .right
         case .down:          return .left
@@ -57,10 +58,11 @@ public extension UIImage.Orientation {
         case .downMirrored:  return .leftMirrored
         case .leftMirrored:  return .upMirrored
         case .rightMirrored: return .downMirrored
+        @unknown default:    fatalError("unknown UIImage.Orientation")
         }
     }
 
-    public var rotateLeft: UIImage.Orientation {
+    var rotateLeft: UIImage.Orientation {
         switch self {
         case .up:            return .left
         case .down:          return .right
@@ -70,10 +72,11 @@ public extension UIImage.Orientation {
         case .downMirrored:  return .rightMirrored
         case .leftMirrored:  return .downMirrored
         case .rightMirrored: return .upMirrored
+        @unknown default:    fatalError("unknown UIImage.Orientation")
         }
     }
 
-    public var rotateUpsideDown: UIImage.Orientation {
+    var rotateUpsideDown: UIImage.Orientation {
         switch self {
         case .up:            return .down
         case .down:          return .up
@@ -83,10 +86,11 @@ public extension UIImage.Orientation {
         case .downMirrored:  return .upMirrored
         case .leftMirrored:  return .rightMirrored
         case .rightMirrored: return .leftMirrored
+        @unknown default:    fatalError("unknown UIImage.Orientation")
         }
     }
 
-    public var swapLeftRight: UIImage.Orientation {
+    var swapLeftRight: UIImage.Orientation {
         switch self {
         case .up:            return .up
         case .down:          return .down
@@ -96,15 +100,17 @@ public extension UIImage.Orientation {
         case .downMirrored:  return .downMirrored
         case .leftMirrored:  return .rightMirrored
         case .rightMirrored: return .leftMirrored
+        @unknown default:    fatalError("unknown UIImage.Orientation")
         }
     }
 
-    public init(captureVideoOrientation: AVCaptureVideoOrientation) {
+    init(captureVideoOrientation: AVCaptureVideoOrientation) {
         switch captureVideoOrientation {
         case .portrait:           self = .up
         case .portraitUpsideDown: self = .down
         case .landscapeRight:     self = .left
         case .landscapeLeft:      self = .right
+        @unknown default:    fatalError("unknown AVCaptureVideoOrientation")
         }
     }
 
