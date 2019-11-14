@@ -818,38 +818,38 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let isAdjustingFocus = changes.newValue else {
                 return
             }
-            print("[KVO] frontCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
+            // print("[KVO] frontCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
         }))
         observations.append(backCameraVideoInput?.device.observe(\.isAdjustingFocus, options: .new, changeHandler: { (device, changes) in
             guard let isAdjustingFocus = changes.newValue else {
                 return
             }
-            print("[KVO] backCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
+            // print("[KVO] backCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
         }))
         observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingExposure, options: .new, changeHandler: { (device, changes) in
             guard let isAdjustingExposure = changes.newValue else {
                 return
             }
-            print("[KVO] frontCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
+            // print("[KVO] frontCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
         }))
         observations.append(backCameraVideoInput?.device.observe(\.isAdjustingExposure, options: .new, changeHandler: { (device, changes) in
             guard let isAdjustingExposure = changes.newValue else {
                 return
             }
-            print("[KVO] backCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
+            // print("[KVO] backCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
         }))
         observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingWhiteBalance, options: .new, changeHandler: { (device, changes) in
             guard let isAdjustingWhiteBalance = changes.newValue else {
                 return
             }
-            print("[KVO] frontCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
+            // print("[KVO] frontCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
             // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
         }))
         observations.append(backCameraVideoInput?.device.observe(\.isAdjustingWhiteBalance, options: .new, changeHandler: { (device, changes) in
             guard let isAdjustingWhiteBalance = changes.newValue else {
                 return
             }
-            print("[KVO] backCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
+            // print("[KVO] backCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
             // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
         }))
         observations.append(frontCameraVideoInput?.device.observe(\.focusPointOfInterest, options: .new, changeHandler: { (device, changes) in
