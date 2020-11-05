@@ -30,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		19E52A452554576900290ADF /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		EA5C8B6C1EA7357E00E5E016 /* SimpleCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimpleCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA5C8B6F1EA7357E00E5E016 /* SimpleCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleCamera.h; sourceTree = "<group>"; };
 		EA5C8B701EA7357E00E5E016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -84,6 +85,7 @@
 		EA5C8B621EA7357E00E5E016 = {
 			isa = PBXGroup;
 			children = (
+				19E52A452554576900290ADF /* Package.swift */,
 				EA5C8BAA1EA73DC400E5E016 /* dotfiles */,
 				EA5C8BAB1EA747C700E5E016 /* Documentation */,
 				19E52A41255454A600290ADF /* Sources */,

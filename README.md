@@ -2,12 +2,19 @@ SimpleCamera
 ===========
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat-square)](https://github.com/Carthage/Carthage)
+[![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-4BC51D.svg?style=flat-square)](https://github.com/apple/swift-package-manager)
 
 
 ## ToDo
 
 - Write Super Cool README.
 - Make Ultra Cool Sample App.
+
+
+## Known Issues
+
+- `#warning("")` してる部分
+- Swift Package Manager にて xib と storyboard がサポートされてないので Carthage 経由でないと `CameraFinderView` が使えない。
 
 
 ## What is this
