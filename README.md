@@ -41,8 +41,8 @@ carthage bootstrap --no-use-binaries --platform iOS
 
 ### See `Interface.swift`
 
-- [`CameraFinderViewInterface.swift`](/SimpleCamera/CameraFinderViewInterface.swift)
-- [`SimpleCameraInterface.swift`](/SimpleCamera/SimpleCameraInterface.swift)
+- [`CameraFinderViewInterface.swift`](/Sources/CameraFinderViewInterface.swift)
+- [`SimpleCameraInterface.swift`](/Sources/SimpleCameraInterface.swift)
 
 
 ## License

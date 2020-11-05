@@ -69,11 +69,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		19E52A41255454A600290ADF /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				EA5C8B7D1EA73B6600E5E016 /* Util */,
+				EA5C8B861EA73BB600E5E016 /* Orientation */,
+				EA5C8B8D1EA73C2400E5E016 /* View */,
+				EA5C8BA41EA73D0A00E5E016 /* SimpleCamera.swift */,
+				EA5C8BA51EA73D0A00E5E016 /* SimpleCameraInterface.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		EA5C8B621EA7357E00E5E016 = {
 			isa = PBXGroup;
 			children = (
 				EA5C8BAA1EA73DC400E5E016 /* dotfiles */,
 				EA5C8BAB1EA747C700E5E016 /* Documentation */,
+				19E52A41255454A600290ADF /* Sources */,
 				EA5C8B6E1EA7357E00E5E016 /* SimpleCamera */,
 				EA5C8B6D1EA7357E00E5E016 /* Products */,
 			);
@@ -92,11 +105,6 @@
 			children = (
 				EA5C8B701EA7357E00E5E016 /* Info.plist */,
 				EA5C8B6F1EA7357E00E5E016 /* SimpleCamera.h */,
-				EA5C8B7D1EA73B6600E5E016 /* Util */,
-				EA5C8B861EA73BB600E5E016 /* Orientation */,
-				EA5C8B8D1EA73C2400E5E016 /* View */,
-				EA5C8BA41EA73D0A00E5E016 /* SimpleCamera.swift */,
-				EA5C8BA51EA73D0A00E5E016 /* SimpleCameraInterface.swift */,
 			);
 			path = SimpleCamera;
 			sourceTree = "<group>";
@@ -109,7 +117,7 @@
 				EA5C8B7F1EA73B8400E5E016 /* ImageUtil.swift */,
 				EA5C8B811EA73B8400E5E016 /* UIImageExtension.swift */,
 			);
-			name = Util;
+			path = Util;
 			sourceTree = "<group>";
 		};
 		EA5C8B861EA73BB600E5E016 /* Orientation */ = {
@@ -119,7 +127,7 @@
 				EA5C8B871EA73BCC00E5E016 /* OrientationDetector.swift */,
 				EA5C8B881EA73BCC00E5E016 /* OrientationDetectorInterface.swift */,
 			);
-			name = Orientation;
+			path = Orientation;
 			sourceTree = "<group>";
 		};
 		EA5C8B8D1EA73C2400E5E016 /* View */ = {
@@ -131,7 +139,7 @@
 				EA5C8B9E1EA73CDF00E5E016 /* CameraFinderView.swift */,
 				EA5C8BA01EA73CDF00E5E016 /* CameraFinderViewInterface.swift */,
 			);
-			name = View;
+			path = View;
 			sourceTree = "<group>";
 		};
 		EA5C8B8E1EA73C3700E5E016 /* AVFoundation */ = {
@@ -139,7 +147,7 @@
 			children = (
 				EA5C8B8F1EA73C4900E5E016 /* AVCaptureVideoPreviewView.swift */,
 			);
-			name = AVFoundation;
+			path = AVFoundation;
 			sourceTree = "<group>";
 		};
 		EA5C8B911EA73C6100E5E016 /* Parts */ = {
@@ -152,7 +160,7 @@
 				EA5C8B971EA73C9200E5E016 /* ZoomIndicatorButton.swift */,
 				EA5C8B961EA73C9200E5E016 /* ShutterAnimationView.swift */,
 			);
-			name = Parts;
+			path = Parts;
 			sourceTree = "<group>";
 		};
 		EA5C8BAA1EA73DC400E5E016 /* dotfiles */ = {
