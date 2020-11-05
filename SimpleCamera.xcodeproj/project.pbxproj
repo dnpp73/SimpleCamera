@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		EA5C8B711EA7357E00E5E016 /* SimpleCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = EA5C8B6F1EA7357E00E5E016 /* SimpleCamera.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EA5C8B7B1EA73A6A00E5E016 /* CIContext+Workaround.h in Headers */ = {isa = PBXBuildFile; fileRef = EA5C8B791EA73A6A00E5E016 /* CIContext+Workaround.h */; };
-		EA5C8B7C1EA73A6A00E5E016 /* CIContext+Workaround.m in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B7A1EA73A6A00E5E016 /* CIContext+Workaround.m */; };
 		EA5C8B821EA73B8400E5E016 /* CameraUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B7E1EA73B8400E5E016 /* CameraUtil.swift */; };
 		EA5C8B831EA73B8400E5E016 /* ImageUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B7F1EA73B8400E5E016 /* ImageUtil.swift */; };
 		EA5C8B841EA73B8400E5E016 /* MainThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C8B801EA73B8400E5E016 /* MainThread.swift */; };
@@ -35,8 +33,6 @@
 		EA5C8B6C1EA7357E00E5E016 /* SimpleCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimpleCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA5C8B6F1EA7357E00E5E016 /* SimpleCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleCamera.h; sourceTree = "<group>"; };
 		EA5C8B701EA7357E00E5E016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EA5C8B791EA73A6A00E5E016 /* CIContext+Workaround.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CIContext+Workaround.h"; sourceTree = "<group>"; };
-		EA5C8B7A1EA73A6A00E5E016 /* CIContext+Workaround.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CIContext+Workaround.m"; sourceTree = "<group>"; };
 		EA5C8B7E1EA73B8400E5E016 /* CameraUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraUtil.swift; sourceTree = "<group>"; };
 		EA5C8B7F1EA73B8400E5E016 /* ImageUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageUtil.swift; sourceTree = "<group>"; };
 		EA5C8B801EA73B8400E5E016 /* MainThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThread.swift; sourceTree = "<group>"; };
@@ -96,7 +92,6 @@
 			children = (
 				EA5C8B701EA7357E00E5E016 /* Info.plist */,
 				EA5C8B6F1EA7357E00E5E016 /* SimpleCamera.h */,
-				EA5C8B781EA73A5D00E5E016 /* iOS 8 Workaround */,
 				EA5C8B7D1EA73B6600E5E016 /* Util */,
 				EA5C8B861EA73BB600E5E016 /* Orientation */,
 				EA5C8B8D1EA73C2400E5E016 /* View */,
@@ -104,15 +99,6 @@
 				EA5C8BA51EA73D0A00E5E016 /* SimpleCameraInterface.swift */,
 			);
 			path = SimpleCamera;
-			sourceTree = "<group>";
-		};
-		EA5C8B781EA73A5D00E5E016 /* iOS 8 Workaround */ = {
-			isa = PBXGroup;
-			children = (
-				EA5C8B791EA73A6A00E5E016 /* CIContext+Workaround.h */,
-				EA5C8B7A1EA73A6A00E5E016 /* CIContext+Workaround.m */,
-			);
-			name = "iOS 8 Workaround";
 			sourceTree = "<group>";
 		};
 		EA5C8B7D1EA73B6600E5E016 /* Util */ = {
@@ -194,7 +180,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA5C8B7B1EA73A6A00E5E016 /* CIContext+Workaround.h in Headers */,
 				EA5C8B711EA7357E00E5E016 /* SimpleCamera.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -227,7 +212,7 @@
 		EA5C8B631EA7357E00E5E016 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = dnpp.org;
 				TargetAttributes = {
 					EA5C8B6B1EA7357E00E5E016 = {
@@ -297,7 +282,6 @@
 				EA5C8B9B1EA73C9200E5E016 /* IndicatorView.swift in Sources */,
 				EA5C8B821EA73B8400E5E016 /* CameraUtil.swift in Sources */,
 				EA5C8B991EA73C9200E5E016 /* FocusIndicatorView.swift in Sources */,
-				EA5C8B7C1EA73A6A00E5E016 /* CIContext+Workaround.m in Sources */,
 				EA5C8B9C1EA73C9200E5E016 /* ShutterAnimationView.swift in Sources */,
 				EA5C8B851EA73B8400E5E016 /* UIImageExtension.swift in Sources */,
 				EA5C8B8A1EA73BCC00E5E016 /* OrientationDetector.swift in Sources */,
@@ -340,6 +324,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -364,7 +349,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -403,6 +388,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -421,7 +407,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
