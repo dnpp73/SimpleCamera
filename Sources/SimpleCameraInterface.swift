@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import AVFoundation
 
-@objc public protocol SimpleCameraObservable: class {
+@objc public protocol SimpleCameraObservable: AnyObject {
     func simpleCameraDidStartRunning(simpleCamera: SimpleCamera)
     func simpleCameraDidStopRunning(simpleCamera: SimpleCamera)
 
@@ -20,12 +20,12 @@ import AVFoundation
     func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera)
 }
 
-@objc public protocol SimpleCameraVideoOutputObservable: class {
+@objc public protocol SimpleCameraVideoOutputObservable: AnyObject {
     func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
     func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didDrop   sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
-@objc public protocol SimpleCameraAudioOutputObservable: class {
+@objc public protocol SimpleCameraAudioOutputObservable: AnyObject {
     func simpleCameraAudioOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
@@ -35,7 +35,7 @@ public enum CameraMode {
     case movie
 }
 
-public protocol SimpleCameraInterface: class {
+public protocol SimpleCameraInterface: AnyObject {
 
     // Singleton Pattern
     static var shared: SimpleCamera { get }

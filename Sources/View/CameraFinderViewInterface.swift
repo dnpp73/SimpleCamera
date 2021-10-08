@@ -30,7 +30,7 @@ public enum GridType: Equatable {
 
 }
 
-public protocol CameraFinderViewInterface: class {
+public protocol CameraFinderViewInterface: AnyObject {
 
     // MARK: - for AVCaptreSession
     var captureVideoPreviewView: AVCaptureVideoPreviewView! { get }
