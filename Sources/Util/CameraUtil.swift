@@ -1,3 +1,5 @@
+// swiftlint:disable identifier_name
+
 import Foundation
 import AVFoundation
 
@@ -75,13 +77,13 @@ extension Array where Element: AVCaptureDevice.Format {
      */
 
     internal var fliter420v: [AVCaptureDevice.Format] {
-        return filter { (format: AVCaptureDevice.Format) -> Bool in
-            return CMFormatDescriptionGetMediaSubType(format.formatDescription) == 875704438
+        filter { (format: AVCaptureDevice.Format) -> Bool in
+            CMFormatDescriptionGetMediaSubType(format.formatDescription) == 875704438
         }
     }
 
     internal var sortedByQuality: [AVCaptureDevice.Format] {
-        return sorted { (a, b) -> Bool in
+        sorted { (a, b) -> Bool in
             let ad = CMVideoFormatDescriptionGetDimensions(a.formatDescription)
             let a_size = ad.width * ad.height
             let bd = CMVideoFormatDescriptionGetDimensions(b.formatDescription)
@@ -96,14 +98,14 @@ extension Array where Element: AVCaptureDevice.Format {
     }
 
     internal var filterAspect4_3: [AVCaptureDevice.Format] {
-        return filter { (format: AVCaptureDevice.Format) -> Bool in
+        filter { (format: AVCaptureDevice.Format) -> Bool in
             let d = CMVideoFormatDescriptionGetDimensions(format.formatDescription)
             return d.width * 3 == d.height * 4 || d.width * 4 == d.height * 3
         }
     }
 
     internal var filterAspect16_9: [AVCaptureDevice.Format] {
-        return filter { (format: AVCaptureDevice.Format) -> Bool in
+        filter { (format: AVCaptureDevice.Format) -> Bool in
             let d = CMVideoFormatDescriptionGetDimensions(format.formatDescription)
             return d.width * 9 == d.height * 16 || d.width * 16 == d.height * 9
         }

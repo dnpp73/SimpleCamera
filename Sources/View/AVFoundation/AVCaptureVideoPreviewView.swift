@@ -6,18 +6,18 @@ public final class AVCaptureVideoPreviewView: UIView {
     // MARK: - AVCaptureVideoPreviewLayer
 
     override public class var layerClass: AnyClass {
-        return AVCaptureVideoPreviewLayer.self
+        AVCaptureVideoPreviewLayer.self
     }
 
     public var captureVideoPreviewLayer: AVCaptureVideoPreviewLayer {
-        return layer as! AVCaptureVideoPreviewLayer // swiftlint:disable:this force_cast
+        layer as! AVCaptureVideoPreviewLayer // swiftlint:disable:this force_cast
     }
 
     // MARK: - AVCaptureVideoPreviewLayer Property Bridge
 
     public var videoGravity: AVLayerVideoGravity {
         get {
-            return captureVideoPreviewLayer.videoGravity
+            captureVideoPreviewLayer.videoGravity
         }
         set {
             captureVideoPreviewLayer.videoGravity = newValue
@@ -26,7 +26,7 @@ public final class AVCaptureVideoPreviewView: UIView {
 
     public var session: AVCaptureSession? {
         get {
-            return captureVideoPreviewLayer.session
+            captureVideoPreviewLayer.session
         }
         set {
             captureVideoPreviewLayer.session = newValue
@@ -34,12 +34,12 @@ public final class AVCaptureVideoPreviewView: UIView {
     }
 
     public var connection: AVCaptureConnection? {
-        return captureVideoPreviewLayer.connection
+        captureVideoPreviewLayer.connection
     }
 
     // MARK: - UIView
 
-    public override var contentMode: UIView.ContentMode {
+    override public var contentMode: UIView.ContentMode {
         didSet {
             // 何故か CoreAnimation の暗黙の action っぽいアニメーションが走るので
             CATransaction.begin()

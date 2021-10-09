@@ -54,14 +54,14 @@ public final class GridView: UIView {
             ctx.setStrokeColor(gray: 0.0, alpha: blackLineAlpha) // 黒
             for i in 0..<vertical {
                 // 縦の黒線
-                let n = CGFloat(i+1) * rect.width / CGFloat(vertical+1)
+                let n = CGFloat(i + 1) * rect.width / CGFloat(vertical + 1)
                 ctx.move(to: CGPoint(x: n, y: 0.0))
                 ctx.addLine(to: CGPoint(x: n, y: rect.height))
                 ctx.strokePath()
             }
             for i in 0..<horizontal {
                 // 横の黒線
-                let n = CGFloat(i+1) * rect.height / CGFloat(horizontal+1)
+                let n = CGFloat(i + 1) * rect.height / CGFloat(horizontal + 1)
                 ctx.move(to: CGPoint(x: 0.0, y: n))
                 ctx.addLine(to: CGPoint(x: rect.width, y: n))
                 ctx.strokePath()
@@ -71,14 +71,14 @@ public final class GridView: UIView {
             ctx.setStrokeColor(gray: 1.0, alpha: whiteLineAlpha) // 白
             for i in 0..<vertical {
                 // 縦の白線
-                let n = CGFloat(i+1) * rect.width / CGFloat(vertical+1)
+                let n = CGFloat(i + 1) * rect.width / CGFloat(vertical + 1)
                 ctx.move(to: CGPoint(x: n, y: 0.0))
                 ctx.addLine(to: CGPoint(x: n, y: rect.height))
                 ctx.strokePath()
             }
             for i in 0..<horizontal {
                 // 横の白線
-                let n = CGFloat(i+1) * rect.height / CGFloat(horizontal+1)
+                let n = CGFloat(i + 1) * rect.height / CGFloat(horizontal + 1)
                 ctx.move(to: CGPoint(x: 0.0, y: n))
                 ctx.addLine(to: CGPoint(x: rect.width, y: n))
                 ctx.strokePath()

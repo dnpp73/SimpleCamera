@@ -10,19 +10,19 @@ public extension UIImage {
     }
 
     var mirrored: UIImage? {
-        return replace(imageOrientation: imageOrientation.mirrored)
+        replace(imageOrientation: imageOrientation.mirrored)
     }
 
     var rotateRight: UIImage? {
-        return replace(imageOrientation: imageOrientation.rotateRight)
+        replace(imageOrientation: imageOrientation.rotateRight)
     }
 
     var rotateLeft: UIImage? {
-        return replace(imageOrientation: imageOrientation.rotateLeft)
+        replace(imageOrientation: imageOrientation.rotateLeft)
     }
 
     var rotateUpsideDown: UIImage? {
-        return replace(imageOrientation: imageOrientation.rotateUpsideDown)
+        replace(imageOrientation: imageOrientation.rotateUpsideDown)
     }
 
 }

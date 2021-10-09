@@ -6,8 +6,8 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
     // MARK: - IBOutlet
 
     // swiftlint:disable private_outlet
-    @IBOutlet private(set) public weak var captureVideoPreviewView: AVCaptureVideoPreviewView!
-    @IBOutlet private(set) public weak var contentView: UIView!
+    @IBOutlet public private(set) weak var captureVideoPreviewView: AVCaptureVideoPreviewView!
+    @IBOutlet public private(set) weak var contentView: UIView!
     // swiftlint:enable private_outlet
 
     @IBOutlet fileprivate weak var gridView: GridView!
@@ -21,13 +21,13 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     // MARK: - UIView
 
-    public override var contentMode: UIView.ContentMode {
+    override public var contentMode: UIView.ContentMode {
         didSet {
             updateSubviewContentModes()
         }
     }
 
-    public override func didMoveToWindow() {
+    override public func didMoveToWindow() {
         super.didMoveToWindow()
         if let _ = window {
             updateSubviewContentModes()
@@ -44,7 +44,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
         }
     }
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         if let gridView = gridView {
             gridView.bounds = CGRect(origin: .zero, size: gridViewSize)
@@ -92,7 +92,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     // MARK: - Initializer
 
-    required public init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupSubviewsFromXib()
         SimpleCamera.shared.add(simpleCameraObserver: self)
@@ -197,7 +197,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     public var gridType: GridType {
         get {
-            return gridView.gridType
+            gridView.gridType
         }
         set {
             gridView.gridType = newValue
@@ -207,7 +207,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     @IBInspectable public var blackLineWidth: CGFloat {
         get {
-            return gridView.blackLineWidth
+            gridView.blackLineWidth
         }
         set {
             gridView.blackLineWidth = newValue
@@ -217,7 +217,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     @IBInspectable public var whiteLineWidth: CGFloat {
         get {
-            return gridView.whiteLineWidth
+            gridView.whiteLineWidth
         }
         set {
             gridView.whiteLineWidth = newValue
@@ -227,7 +227,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     @IBInspectable public var blackLineAlpha: CGFloat {
         get {
-            return gridView.blackLineAlpha
+            gridView.blackLineAlpha
         }
         set {
             gridView.blackLineAlpha = newValue
@@ -237,7 +237,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     @IBInspectable public var whiteLineAlpha: CGFloat {
         get {
-            return gridView.whiteLineAlpha
+            gridView.whiteLineAlpha
         }
         set {
             gridView.whiteLineAlpha = newValue
@@ -261,7 +261,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     @IBInspectable public var isFocusIndicatorHidden: Bool {
         get {
-            return focusIndicatorView.isHidden
+            focusIndicatorView.isHidden
         }
         set {
             focusIndicatorView.isHidden = newValue
@@ -270,7 +270,7 @@ public final class CameraFinderView: UIView, CameraFinderViewInterface {
 
     @IBInspectable public var isExposureIndicatorHidden: Bool {
         get {
-            return exposureIndicatorView.isHidden
+            exposureIndicatorView.isHidden
         }
         set {
             exposureIndicatorView.isHidden = newValue

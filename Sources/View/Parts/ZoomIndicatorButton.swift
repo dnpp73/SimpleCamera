@@ -32,7 +32,7 @@ internal final class ZoomIndicatorButton: UIButton {
 
     @IBInspectable dynamic var cornerRadius: CGFloat {
         get {
-            return layer.cornerRadius
+            layer.cornerRadius
         }
         set {
             layer.cornerRadius = newValue
@@ -55,7 +55,7 @@ internal final class ZoomIndicatorButton: UIButton {
 
     @IBInspectable dynamic var borderWidth: CGFloat {
         get {
-            return layer.borderWidth
+            layer.borderWidth
         }
         set {
             layer.borderWidth = newValue
@@ -75,7 +75,7 @@ internal final class ZoomIndicatorButton: UIButton {
 
     @IBInspectable dynamic var normalBackgroundColor: UIColor? {
         get {
-            return nil // dummy
+            nil // dummy
         }
         set {
             setBackgroundColor(newValue, for: .normal)
@@ -84,7 +84,7 @@ internal final class ZoomIndicatorButton: UIButton {
 
     @IBInspectable dynamic var highlightedBackgroundColor: UIColor? {
         get {
-            return nil // dummy
+            nil // dummy
         }
         set {
             setBackgroundColor(newValue, for: .highlighted)
@@ -93,7 +93,7 @@ internal final class ZoomIndicatorButton: UIButton {
 
     @IBInspectable dynamic var disabledBackgroundColor: UIColor? {
         get {
-            return nil // dummy
+            nil // dummy
         }
         set {
             setBackgroundColor(newValue, for: .disabled)

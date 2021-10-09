@@ -5,7 +5,7 @@ public enum GridType: Equatable {
     case equalDistance(vertical: UInt, horizontal: UInt)
 
     public static var equalDistance3x3: GridType {
-        return .equalDistance(vertical: 2, horizontal: 2)
+        .equalDistance(vertical: 2, horizontal: 2)
     }
 
     public var next: GridType {
@@ -33,6 +33,7 @@ public enum GridType: Equatable {
 public protocol CameraFinderViewInterface: AnyObject {
 
     // MARK: - for AVCaptreSession
+    // swiftlint:disable:next implicitly_unwrapped_optional
     var captureVideoPreviewView: AVCaptureVideoPreviewView! { get }
 
     // MARK: - Tap to Focus, Pinch to Zoom
@@ -58,6 +59,7 @@ public protocol CameraFinderViewInterface: AnyObject {
     func shutterCloseAndOpenAnimation(duration: TimeInterval, completion: ((Bool) -> Void)?)
 
     // MARK: - Custom UI
+    // swiftlint:disable:next implicitly_unwrapped_optional
     var contentView: UIView! { get }
 
 }

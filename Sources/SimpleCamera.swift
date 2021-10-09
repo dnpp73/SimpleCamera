@@ -7,7 +7,7 @@ import AVFoundation
 public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     public static let shared = SimpleCamera() // Singleton
-    private override init() {}
+    override private init() {}
 
     fileprivate let sessionQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.sessionQueue") // attributes: .concurrent しなければ serial queue
     private     let videoOutputQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.VideoOutput.delegateQueue")
@@ -85,7 +85,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     // MARK: Preset
 
-    private(set) public var mode: CameraMode = .unknown
+    public private(set) var mode: CameraMode = .unknown
 
     public func setPhotoMode() {
         sessionQueue.sync {
@@ -204,7 +204,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     // MARK: Capture Image
 
     public var isCapturingImage: Bool {
-        return imageOutput.isCapturingStillImage || isSilentCapturingImage
+        imageOutput.isCapturingStillImage || isSilentCapturingImage
     }
 
     public var captureLimitSize: CGSize = .zero
@@ -309,7 +309,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     public var isEnabledAudioRecording: Bool = false
 
-    fileprivate(set) public var isRecordingMovie: Bool = false
+    public fileprivate(set) var isRecordingMovie: Bool = false
 
     @discardableResult
     public func startRecordMovie(to url: URL) -> Bool {
@@ -670,24 +670,24 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 if let device = findCameraDevice(position: .front) {
                     frontCameraVideoInput = try AVCaptureDeviceInput(device: device)
                 } else {
-                    print("frontCameraVideoInput is nil")
+                    print("[SimpleCamera.configure()] frontCameraVideoInput is nil")
                     frontCameraVideoInput = nil
                 }
             } catch let error {
                 print(error)
-                print("frontCameraVideoInput is nil")
+                print("[SimpleCamera.configure()] frontCameraVideoInput is nil")
                 frontCameraVideoInput = nil
             }
             do {
                 if let device = findCameraDevice(position: .back) {
                     backCameraVideoInput = try AVCaptureDeviceInput(device: device)
                 } else {
-                    print("backCameraVideoInput is nil")
+                    print("[SimpleCamera.configure()] backCameraVideoInput is nil")
                     backCameraVideoInput = nil
                 }
             } catch let error {
                 print(error)
-                print("backCameraVideoInput is nil")
+                print("[SimpleCamera.configure()] backCameraVideoInput is nil")
                 backCameraVideoInput = nil
             }
 
@@ -803,104 +803,118 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     private var keyValueObservations: [NSKeyValueObservation] = []
 
+    private var showDebugMessages = false
+
     private func addObservers() {
         #warning("kaku")
         var observations: [NSKeyValueObservation?] = []
-        observations.append(captureSession.observe(\.isRunning, options: .new, changeHandler: { (captureSession, changes) in
+        observations.append(captureSession.observe(\.isRunning, options: .new) { (captureSession, changes) in
             guard let isRunning = changes.newValue else {
                 return
             }
             onMainThreadAsync {
                 self.isRunningForObserve = isRunning
             }
-        }))
-        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingFocus, options: .new, changeHandler: { (device, changes) in
+        })
+        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingFocus, options: .new) { (device, changes) in
             guard let isAdjustingFocus = changes.newValue else {
                 return
             }
-            // print("[KVO] frontCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
-        }))
-        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingFocus, options: .new, changeHandler: { (device, changes) in
+            if self.showDebugMessages {
+                print("[KVO] frontCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
+            }
+        })
+        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingFocus, options: .new) { (device, changes) in
             guard let isAdjustingFocus = changes.newValue else {
                 return
             }
-            // print("[KVO] backCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
-        }))
-        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingExposure, options: .new, changeHandler: { (device, changes) in
+            if self.showDebugMessages {
+                print("[KVO] backCameraDevice isAdjustingFocus: \(isAdjustingFocus)")
+            }
+        })
+        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingExposure, options: .new) { (device, changes) in
             guard let isAdjustingExposure = changes.newValue else {
                 return
             }
-            // print("[KVO] frontCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
-        }))
-        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingExposure, options: .new, changeHandler: { (device, changes) in
+            if self.showDebugMessages {
+                print("[KVO] frontCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
+            }
+        })
+        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingExposure, options: .new) { (device, changes) in
             guard let isAdjustingExposure = changes.newValue else {
                 return
             }
-            // print("[KVO] backCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
-        }))
-        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingWhiteBalance, options: .new, changeHandler: { (device, changes) in
+            if self.showDebugMessages {
+                print("[KVO] backCameraDevice isAdjustingExposure: \(isAdjustingExposure)")
+            }
+        })
+        observations.append(frontCameraVideoInput?.device.observe(\.isAdjustingWhiteBalance, options: .new) { (device, changes) in
             guard let isAdjustingWhiteBalance = changes.newValue else {
                 return
             }
-            // print("[KVO] frontCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
+            if self.showDebugMessages {
+                print("[KVO] frontCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
+            }
             // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
-        }))
-        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingWhiteBalance, options: .new, changeHandler: { (device, changes) in
+        })
+        observations.append(backCameraVideoInput?.device.observe(\.isAdjustingWhiteBalance, options: .new) { (device, changes) in
             guard let isAdjustingWhiteBalance = changes.newValue else {
                 return
             }
-            // print("[KVO] backCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
+            if self.showDebugMessages {
+                print("[KVO] backCameraDevice adjustingWhiteBalance: \(isAdjustingWhiteBalance)")
+            }
             // 白色点を清く正しく取ってくるの、色々ありそうなのでめんどくさそう。Dash で 'AVCaptureDevice white' くらいまで打てば出てくる英語を読まないといけない。
-        }))
-        observations.append(frontCameraVideoInput?.device.observe(\.focusPointOfInterest, options: .new, changeHandler: { (device, changes) in
+        })
+        observations.append(frontCameraVideoInput?.device.observe(\.focusPointOfInterest, options: .new) { (device, changes) in
             guard let focusPointOfInterest = changes.newValue else {
                 return
             }
             onMainThreadAsync {
                 self.focusPointOfInterestForObserve = focusPointOfInterest
             }
-        }))
-        observations.append(backCameraVideoInput?.device.observe(\.focusPointOfInterest, options: .new, changeHandler: { (device, changes) in
+        })
+        observations.append(backCameraVideoInput?.device.observe(\.focusPointOfInterest, options: .new) { (device, changes) in
             guard let focusPointOfInterest = changes.newValue else {
                 return
             }
             onMainThreadAsync {
                 self.focusPointOfInterestForObserve = focusPointOfInterest
             }
-        }))
-        observations.append(frontCameraVideoInput?.device.observe(\.exposurePointOfInterest, options: .new, changeHandler: { (device, changes) in
+        })
+        observations.append(frontCameraVideoInput?.device.observe(\.exposurePointOfInterest, options: .new) { (device, changes) in
             guard let exposurePointOfInterest = changes.newValue else {
                 return
             }
             onMainThreadAsync {
                 self.exposurePointOfInterestForObserve = exposurePointOfInterest
             }
-        }))
-        observations.append(backCameraVideoInput?.device.observe(\.exposurePointOfInterest, options: .new, changeHandler: { (device, changes) in
+        })
+        observations.append(backCameraVideoInput?.device.observe(\.exposurePointOfInterest, options: .new) { (device, changes) in
             guard let exposurePointOfInterest = changes.newValue else {
                 return
             }
             onMainThreadAsync {
                 self.exposurePointOfInterestForObserve = exposurePointOfInterest
             }
-        }))
-        observations.append(frontCameraVideoInput?.device.observe(\.videoZoomFactor, options: .new, changeHandler: { (device, changes) in
+        })
+        observations.append(frontCameraVideoInput?.device.observe(\.videoZoomFactor, options: .new) { (device, changes) in
             guard let videoZoomFactor = changes.newValue else {
                 return
             }
             onMainThreadAsync {
                 self.zoomFactorForObserve = videoZoomFactor
             }
-        }))
-        observations.append(backCameraVideoInput?.device.observe(\.videoZoomFactor, options: .new, changeHandler: { (device, changes) in
+        })
+        observations.append(backCameraVideoInput?.device.observe(\.videoZoomFactor, options: .new) { (device, changes) in
             guard let videoZoomFactor = changes.newValue else {
                 return
             }
             onMainThreadAsync {
                 self.zoomFactorForObserve = videoZoomFactor
             }
-        }))
-        keyValueObservations = observations.compactMap({ $0 })
+        })
+        keyValueObservations = observations.compactMap { $0 }
 
         NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: Notification.Name("AVCaptureDeviceSubjectAreaDidChangeNotification"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: Notification.Name("AVCaptureSessionRuntimeErrorNotification"), object: captureSession)
@@ -913,15 +927,19 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         keyValueObservations.removeAll() // NSKeyValueObservation の deinit を発行させるだけで良い。
     }
 
-    @objc private func subjectAreaDidChange(notification: Notification) {
-        // print("Subject Area Did Change")
+    @objc
+    private func subjectAreaDidChange(notification: Notification) {
+        if showDebugMessages {
+            print("[Notification] Subject Area Did Change")
+        }
         if let device = notification.object as? AVCaptureDevice, device == currentDevice {
             // print("notification.object == currentDevice")
             resetFocusAndExposure()
         }
     }
 
-    @objc private func sessionRuntimeError(notification: Notification) {
+    @objc
+    private func sessionRuntimeError(notification: Notification) {
         #warning("TODO")
         /*
         guard let errorValue = notification.userInfo?[AVCaptureSessionErrorKey] as? NSError else {
@@ -936,7 +954,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
          */
     }
 
-    @objc private func sessionWasInterrupted(notification: Notification) {
+    @objc
+    private func sessionWasInterrupted(notification: Notification) {
         #warning("TODO")
         /*
         guard #available(iOS 9.0, *) else {
@@ -953,7 +972,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
          */
     }
 
-    @objc private func sessionInterruptionEnded(notification: Notification) {
+    @objc
+    private func sessionInterruptionEnded(notification: Notification) {
         onMainThreadAsync {
             for observer in self.observers.allObjects {
                 observer.simpleCameraSessionInterruptionEnded(simpleCamera: self)

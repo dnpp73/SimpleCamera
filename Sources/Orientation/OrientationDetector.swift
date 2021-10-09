@@ -14,7 +14,7 @@ public final class OrientationDetector: OrientationDetectorInterface {
 
     private var orientationDidChange: Bool = false
 
-    private(set) public var orientation: UIDeviceOrientation = .unknown {
+    public private(set) var orientation: UIDeviceOrientation = .unknown {
         willSet {
             orientationDidChange = (orientation != newValue)
         }
@@ -30,7 +30,7 @@ public final class OrientationDetector: OrientationDetectorInterface {
 
     private var captureVideoOrientationDidChange: Bool = false
 
-    private(set) public var captureVideoOrientation: AVCaptureVideoOrientation = .portrait {
+    public private(set) var captureVideoOrientation: AVCaptureVideoOrientation = .portrait {
         willSet {
             captureVideoOrientationDidChange = (captureVideoOrientation != newValue)
         }

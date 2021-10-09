@@ -43,7 +43,8 @@ internal final class ExposureIndicatorView: UIView {
         })
     }
 
-    @objc private func animateIndicatorViewAlpha() {
+    @objc
+    private func animateIndicatorViewAlpha() {
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #function, object: nil)
         let alpha: CGFloat = indicatorView.center == center ? 0.0 : baseAlpha / 2.0
         UIView.animate(withDuration: fadeTime, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut], animations: {
