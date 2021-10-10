@@ -126,10 +126,9 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
             captureSession.commitConfiguration()
 
-            resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
-
             mode = .photo
 
+            resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
             resetFocusAndExposure()
         }
     }
@@ -198,10 +197,9 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
             captureSession.commitConfiguration()
 
-            resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
-
             mode = .movie
 
+            resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
             resetFocusAndExposure()
         }
     }
