@@ -20,8 +20,6 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     fileprivate let audioDataOutput = AVCaptureAudioDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
     fileprivate let movieFileOutput = AVCaptureMovieFileOutput()
 
-    private var hasUltraWideCameraInBackCamera = false // configure（） 内で backCameraVideoInput を探すときに決める。
-
     private var frontCameraVideoInput: AVCaptureDeviceInput?
     private var backCameraVideoInput: AVCaptureDeviceInput?
     private var audioDeviceInput: AVCaptureDeviceInput?
@@ -128,6 +126,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
             captureSession.commitConfiguration()
 
+            resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
+
             mode = .photo
 
             resetFocusAndExposure()
@@ -197,6 +197,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             }
 
             captureSession.commitConfiguration()
+
+            resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
 
             mode = .movie
 
@@ -416,6 +418,19 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
+    private func resetZoomFactor(sync: Bool) {
+        lockCurrentCameraDeviceAndConfigure(sync: sync) {
+            guard let lockedDevice = self.currentDevice else {
+                return
+            }
+            if self.isCurrentInputBack && self.hasUltraWideCameraInBackCamera {
+                lockedDevice.videoZoomFactor = 2.0
+            } else {
+                lockedDevice.videoZoomFactor = 1.0
+            }
+        }
+    }
+
     public var zoomFactorLimit: CGFloat = 6.0 {
         didSet {
             if zoomFactor > zoomFactorLimit {
@@ -566,6 +581,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // とりあえず portrait に戻す
             let videoOrientation = AVCaptureVideoOrientation.portrait
             videoDataOutput.connection(with: .video)?.videoOrientation = videoOrientation
+
+            resetZoomFactor(sync: false)
         }
 
         if switchSucceed {
@@ -668,6 +685,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     // MARK: - Private Functions
+
+    private var hasUltraWideCameraInBackCamera = false // configure（） 内で backCameraVideoInput を探すときに決める。
 
     private var isConfigured: Bool = false
 
