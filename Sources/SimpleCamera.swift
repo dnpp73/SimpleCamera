@@ -67,6 +67,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             OrientationDetector.shared.startSensor()
             sessionQueue.async {
                 self.captureSession.startRunning()
+                self.resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
                 self.resetFocusAndExposure()
             }
         }
@@ -579,8 +580,6 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // とりあえず portrait に戻す
             let videoOrientation = AVCaptureVideoOrientation.portrait
             videoDataOutput.connection(with: .video)?.videoOrientation = videoOrientation
-
-            resetZoomFactor(sync: false)
         }
 
         if switchSucceed {
@@ -590,6 +589,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                     observer.simpleCameraDidSwitchCameraInput(simpleCamera: self)
                 }
             }
+            resetZoomFactor(sync: true)
             resetFocusAndExposure()
         }
     }
