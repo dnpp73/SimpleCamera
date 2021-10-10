@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 import AVFoundation
 
@@ -57,3 +59,5 @@ public final class AVCaptureVideoPreviewView: UIView {
     }
 
 }
+
+#endif

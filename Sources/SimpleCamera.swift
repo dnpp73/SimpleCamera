@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import Foundation
 import UIKit
 import AVFoundation
@@ -1134,3 +1136,5 @@ extension SimpleCamera: AVCaptureFileOutputRecordingDelegate {
     }
 
 }
+
+#endif

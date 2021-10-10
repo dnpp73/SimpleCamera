@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import Foundation
 import UIKit
 import AVFoundation
@@ -116,3 +118,5 @@ public extension UIImage.Orientation {
     }
 
 }
+
+#endif

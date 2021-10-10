@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 
 internal final class ShutterAnimationView: UIView {
@@ -33,3 +35,5 @@ internal final class ShutterAnimationView: UIView {
     }
 
 }
+
+#endif

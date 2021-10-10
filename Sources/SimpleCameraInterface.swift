@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import Foundation
 import UIKit
 import AVFoundation
@@ -106,3 +108,5 @@ public protocol SimpleCameraInterface: AnyObject {
     // Utility
     var preferredUIImageOrientationForVideoDataOutput: UIImage.Orientation { get }
 }
+
+#endif

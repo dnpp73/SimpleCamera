@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 
 internal final class FocusIndicatorView: UIView {
@@ -55,3 +57,5 @@ internal final class FocusIndicatorView: UIView {
     }
 
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import Foundation
 import UIKit
 import AVFoundation
@@ -73,3 +75,5 @@ public func createUIImage(from sampleBuffer: CMSampleBuffer, limitSize: CGSize =
     }
     return createUIImage(from: image, limitSize: limitSize, imageOrientation: imageOrientation)
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 import AVFoundation
 
@@ -348,3 +350,5 @@ extension CameraFinderView: SimpleCameraObservable {
     }
 
 }
+
+#endif

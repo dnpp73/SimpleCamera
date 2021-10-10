@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 
 public final class GridView: UIView {
@@ -88,3 +90,5 @@ public final class GridView: UIView {
     }
 
 }
+
+#endif

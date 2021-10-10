@@ -1,5 +1,7 @@
 // swiftlint:disable identifier_name
 
+#if canImport(UIKit)
+
 import Foundation
 import AVFoundation
 
@@ -112,3 +114,5 @@ extension Array where Element: AVCaptureDevice.Format {
     }
 
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 
 internal final class CircleIndicatorView: UIView {
@@ -66,3 +68,5 @@ internal final class SquareIndicatorView: UIView {
     }
 
 }
+
+#endif

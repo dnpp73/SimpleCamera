@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import Foundation
 import UIKit
 import CoreMotion
@@ -30,3 +32,5 @@ extension Notification.Name {
     public static let OrientationDetectorOrientationDidChange = Notification.Name("OrientationDetectorOrientationDidChange")
     public static let OrientationDetectorCaptureVideoOrientationDidChange = Notification.Name("OrientationDetectorCaptureVideoOrientationDidChange")
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import Foundation
 import UIKit
 import CoreMotion
@@ -99,3 +101,5 @@ public final class OrientationDetector: OrientationDetectorInterface {
     }
 
 }
+
+#endif

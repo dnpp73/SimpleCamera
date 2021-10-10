@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 
 public enum GridType: Equatable {
@@ -63,3 +65,5 @@ public protocol CameraFinderViewInterface: AnyObject {
     var contentView: UIView! { get }
 
 }
+
+#endif

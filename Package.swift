@@ -6,6 +6,7 @@ let package = Package(
     name: "SimpleCamera",
     platforms: [
         .iOS(.v12),
+        .macOS(.v10_11),
     ],
     products: [
         .library(name: "SimpleCamera", targets: ["SimpleCamera"]),

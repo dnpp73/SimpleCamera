@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 
 private extension UIImage {
@@ -143,3 +145,5 @@ extension ZoomIndicatorButton: SimpleCameraObservable {
         updateTitleForCurrentZoomFactor()
     }
 }
+
+#endif
