@@ -5,13 +5,6 @@
 import Foundation
 import AVFoundation
 
-internal func findCameraDevice(position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-    for device in AVCaptureDevice.devices() where device.position == position {
-        return device
-    }
-    return nil
-}
-
 extension AVCaptureConnection {
     internal var isFrontCameraDevice: Bool {
         // inputPorts は 1 つだけという前提（現状の iOS では全部そうなので）

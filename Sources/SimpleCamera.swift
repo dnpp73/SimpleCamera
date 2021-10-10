@@ -20,6 +20,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     fileprivate let audioDataOutput = AVCaptureAudioDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
     fileprivate let movieFileOutput = AVCaptureMovieFileOutput()
 
+    private var hasUltraWideCameraInBackCamera = false // configure（） 内で backCameraVideoInput を探すときに決める。
+
     private var frontCameraVideoInput: AVCaptureDeviceInput?
     private var backCameraVideoInput: AVCaptureDeviceInput?
     private var audioDeviceInput: AVCaptureDeviceInput?
@@ -391,17 +393,25 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             guard let device = currentDevice else {
                 return 1.0
             }
-            return device.videoZoomFactor
+            if isCurrentInputBack && hasUltraWideCameraInBackCamera {
+                return device.videoZoomFactor / 2.0
+            } else {
+                return device.videoZoomFactor
+            }
         }
         set {
             lockCurrentCameraDeviceAndConfigure {
                 guard let lockedDevice = self.currentDevice else {
                     return
                 }
-                let minZoomFactor = CGFloat(1.0)
+                let minZoomFactor = self.minZoomFactor
                 let maxZoomFactor = self.maxZoomFactor
-                let validateZoomFactor = min(max(newValue, minZoomFactor), maxZoomFactor)
-                lockedDevice.videoZoomFactor = validateZoomFactor
+                let validatedZoomFactor = min(max(newValue, minZoomFactor), maxZoomFactor)
+                if self.isCurrentInputBack && self.hasUltraWideCameraInBackCamera {
+                    lockedDevice.videoZoomFactor = validatedZoomFactor * 2.0
+                } else {
+                    lockedDevice.videoZoomFactor = validatedZoomFactor
+                }
             }
         }
     }
@@ -419,6 +429,14 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             return 1.0
         }
         return min(zoomFactorLimit, videoMaxZoomFactor)
+    }
+
+    public var minZoomFactor: CGFloat {
+        if isCurrentInputBack && hasUltraWideCameraInBackCamera {
+            return 0.5
+        } else {
+            return 1.0
+        }
     }
 
     // MARK: Focus, Exposure
@@ -668,7 +686,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             do {
                 // iOS 8,9 のカメラアクセス許可ダイアログはここで出る。
                 // iOS 10 では info.plist の NSCameraUsageDescription に許可の文言を書かないとアプリごと abort() してしまう。
-                if let device = findCameraDevice(position: .front) {
+                if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
                     frontCameraVideoInput = try AVCaptureDeviceInput(device: device)
                 } else {
                     print("[SimpleCamera.configure()] frontCameraVideoInput is nil")
@@ -680,7 +698,36 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 frontCameraVideoInput = nil
             }
             do {
-                if let device = findCameraDevice(position: .back) {
+                let device: AVCaptureDevice?
+                // 汎用カメラライブラリを目指して作っているので、デバイスの優先順位の決め方は
+                // - 用途を絞った 1 枚のカメラ (広角・望遠・超広角) は使わない
+                // - 複数カメラを一気に扱えるカメラを指定する
+                // - カメラの数が多い方を優先する
+                // という感じでやっていく。
+                if #available(iOS 13.0, *) {
+                    if let tripleCameraDevice = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) {
+                        hasUltraWideCameraInBackCamera = true
+                        device = tripleCameraDevice
+                    } else if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
+                        device = dualCameraDevice
+                    } else if let dualWideCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
+                        hasUltraWideCameraInBackCamera = true
+                        device = dualWideCameraDevice
+                    } else if let wideAngleCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                        device = wideAngleCameraDevice
+                    } else {
+                        device = nil
+                    }
+                } else {
+                    if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
+                        device = dualCameraDevice
+                    } else if let wideAngleCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                        device = wideAngleCameraDevice
+                    } else {
+                        device = nil
+                    }
+                }
+                if let device = device {
                     backCameraVideoInput = try AVCaptureDeviceInput(device: device)
                 } else {
                     print("[SimpleCamera.configure()] backCameraVideoInput is nil")
@@ -912,7 +959,11 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 return
             }
             onMainThreadAsync {
-                self.zoomFactorForObserve = videoZoomFactor
+                if self.hasUltraWideCameraInBackCamera {
+                    self.zoomFactorForObserve = videoZoomFactor / 2.0
+                } else {
+                    self.zoomFactorForObserve = videoZoomFactor
+                }
             }
         })
         keyValueObservations = observations.compactMap { $0 }
