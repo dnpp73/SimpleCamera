@@ -10,10 +10,10 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     override private init() {}
 
     fileprivate let sessionQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.sessionQueue") // attributes: .concurrent しなければ serial queue
-    private     let videoOutputQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.VideoOutput.delegateQueue")
+    private let videoOutputQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.VideoOutput.delegateQueue")
 
     fileprivate let captureSession = AVCaptureSession()
-    private     let imageOutput    = AVCaptureStillImageOutput()
+    private     let stillImageOutput = AVCaptureStillImageOutput()
     fileprivate let videoOutput    = AVCaptureVideoDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
     fileprivate let audioOutput    = AVCaptureAudioDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
     fileprivate let fileOutput     = AVCaptureMovieFileOutput()
@@ -43,9 +43,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         if let c = self.captureVideoPreviewView, c.session != nil {
             c.session = nil
         }
-        sessionQueue.async {
-            captureVideoPreviewView.session = self.captureSession
-        }
+        // sessionQueue.async { } で囲ってしまうとメインスレッド外から UI を触ってしまうので外す。
+        captureVideoPreviewView.session = captureSession
         self.captureVideoPreviewView = captureVideoPreviewView
     }
 
@@ -204,7 +203,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     // MARK: Capture Image
 
     public var isCapturingImage: Bool {
-        imageOutput.isCapturingStillImage || isSilentCapturingImage
+        stillImageOutput.isCapturingStillImage || isSilentCapturingImage
     }
 
     public var captureLimitSize: CGSize = .zero
@@ -222,13 +221,13 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             completion(nil, nil)
             return
         }
-        guard imageOutput.isCapturingStillImage == false else {
+        guard stillImageOutput.isCapturingStillImage == false else {
             completion(nil, nil)
             return
         }
 
         sessionQueue.async {
-            let captureImageConnection: AVCaptureConnection = self.imageOutput.connection(with: .video)! // swiftlint:disable:this force_unwrapping
+            let stillImageOutputCaptureConnection: AVCaptureConnection = self.stillImageOutput.connection(with: .video)! // swiftlint:disable:this force_unwrapping
             // captureStillImageAsynchronously であれば撮影直前に connection の videoOrientation を弄っても問題なさそう
             self.captureSession.beginConfiguration()
             let videoOrientation: AVCaptureVideoOrientation
@@ -237,10 +236,10 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             } else {
                 videoOrientation = .portrait
             }
-            captureImageConnection.videoOrientation = videoOrientation
+            stillImageOutputCaptureConnection.videoOrientation = videoOrientation
             self.captureSession.commitConfiguration() // defer より前のタイミングで commit したい
 
-            self.imageOutput.captureStillImageAsynchronously(from: captureImageConnection) { (imageDataBuffer, error) -> Void in
+            self.stillImageOutput.captureStillImageAsynchronously(from: stillImageOutputCaptureConnection) { (imageDataBuffer, error) -> Void in
                 guard let imageDataBuffer = imageDataBuffer, let data = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataBuffer) else {
                     onMainThreadAsync {
                         completion(nil, nil)
@@ -268,7 +267,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 }
 
                 let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: imageDataBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String: Any]
-                let mirrored = self.isMirroredImageIfFrontCamera && captureImageConnection.isFrontCameraDevice
+                let mirrored = self.isMirroredImageIfFrontCamera && stillImageOutputCaptureConnection.isFrontCameraDevice
                 let image = mirrored ? scaledImage.mirrored : scaledImage
                 onMainThreadAsync {
                     completion(image, metadata)
@@ -696,10 +695,10 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 captureSession.commitConfiguration()
             }
 
-            // captureSession に imageOutput を放り込む
-            imageOutput.outputSettings = [ AVVideoCodecKey: AVVideoCodecJPEG ]
-            if captureSession.canAddOutput(imageOutput) {
-                captureSession.addOutput(imageOutput)
+            // captureSession に stillImageOutput を放り込む
+            stillImageOutput.outputSettings = [ AVVideoCodecKey: AVVideoCodecType.jpeg ]
+            if captureSession.canAddOutput(stillImageOutput) {
+                captureSession.addOutput(stillImageOutput)
             }
 
             // videoOutput を調整して captureSession に放り込む
@@ -741,17 +740,17 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 }
             }
 
-            // imageOutput と videoOutput の videoOrientation を InterfaceOrientation に揃えるか縦にしておく。
+            // stillImageOutput と videoOutput の videoOrientation を InterfaceOrientation に揃えるか縦にしておく。
             // captureSession に addInput した後じゃないと connection は nil なので videoOrientation を取ろうとすると nil アクセスで死にます。
-            // デフォルトでは imageOutput が 1 (portrait) で videoOutput が 3 (landscapeRight)
+            // デフォルトでは stillImageOutput が 1 (portrait) で videoOutput が 3 (landscapeRight)
             // let videoOrientation = AVCaptureVideoOrientation(interfaceOrientation: UIApplication.shared.statusBarOrientation) ?? .portrait
             // とりあえず portrait に戻す
             let videoOrientation = AVCaptureVideoOrientation.portrait
-            if let imageOutputConnection = imageOutput.connection(with: AVMediaType.video) {
-                if imageOutputConnection.isVideoOrientationSupported {
-                    imageOutputConnection.videoOrientation = videoOrientation
+            if let stillImageOutputConnection = stillImageOutput.connection(with: AVMediaType.video) {
+                if stillImageOutputConnection.isVideoOrientationSupported {
+                    stillImageOutputConnection.videoOrientation = videoOrientation
                 }
-                imageOutputConnection.videoScaleAndCropFactor = 1.0
+                stillImageOutputConnection.videoScaleAndCropFactor = 1.0
             }
             if let videoOutputConnection = videoOutput.connection(with: AVMediaType.video) {
                 if videoOutputConnection.isVideoOrientationSupported {
