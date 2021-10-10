@@ -20,13 +20,13 @@ import AVFoundation
     func simpleCameraSessionInterruptionEnded(simpleCamera: SimpleCamera)
 }
 
-@objc public protocol SimpleCameraVideoOutputObservable: AnyObject {
-    func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
-    func simpleCameraVideoOutputObserve(captureOutput: AVCaptureOutput, didDrop   sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+@objc public protocol SimpleCameraVideoDataOutputObservable: AnyObject {
+    func simpleCameraVideoDataOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+    func simpleCameraVideoDataOutputObserve(captureOutput: AVCaptureOutput, didDrop   sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
-@objc public protocol SimpleCameraAudioOutputObservable: AnyObject {
-    func simpleCameraAudioOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+@objc public protocol SimpleCameraAudioDataOutputObservable: AnyObject {
+    func simpleCameraAudioDataOutputObserve(captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
 public enum CameraMode {
@@ -95,14 +95,14 @@ public protocol SimpleCameraInterface: AnyObject {
     func add(simpleCameraObserver: SimpleCameraObservable)
     func remove(simpleCameraObserver: SimpleCameraObservable)
 
-    // Manage VideoOutput Observers
-    func add(videoOutputObserver: SimpleCameraVideoOutputObservable)
-    func remove(videoOutputObserver: SimpleCameraVideoOutputObservable)
+    // Manage VideoDataOutput Observers
+    func add(videoDataOutputObserver: SimpleCameraVideoDataOutputObservable)
+    func remove(videoDataOutputObserver: SimpleCameraVideoDataOutputObservable)
 
     // Manage AudioOutput Observers
-    func add(audioOutputObserver: SimpleCameraAudioOutputObservable)
-    func remove(audioOutputObserver: SimpleCameraAudioOutputObservable)
+    func add(audioDataOutputObserver: SimpleCameraAudioDataOutputObservable)
+    func remove(audioDataOutputObserver: SimpleCameraAudioDataOutputObservable)
 
     // Utility
-    var preferredUIImageOrientationForVideoOutput: UIImage.Orientation { get }
+    var preferredUIImageOrientationForVideoDataOutput: UIImage.Orientation { get }
 }

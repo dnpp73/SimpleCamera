@@ -10,13 +10,13 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     override private init() {}
 
     fileprivate let sessionQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.sessionQueue") // attributes: .concurrent しなければ serial queue
-    private let videoOutputQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.VideoOutput.delegateQueue")
+    private let videoDataOutputQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.VideoDataOutput.delegateQueue")
 
     fileprivate let captureSession = AVCaptureSession()
-    private     let stillImageOutput = AVCaptureStillImageOutput()
-    fileprivate let videoOutput    = AVCaptureVideoDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
-    fileprivate let audioOutput    = AVCaptureAudioDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
-    fileprivate let fileOutput     = AVCaptureMovieFileOutput()
+    private let stillImageOutput = AVCaptureStillImageOutput()
+    fileprivate let videoDataOutput = AVCaptureVideoDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
+    fileprivate let audioDataOutput = AVCaptureAudioDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
+    fileprivate let movieFileOutput = AVCaptureMovieFileOutput()
 
     private var frontCameraVideoInput: AVCaptureDeviceInput?
     private var backCameraVideoInput: AVCaptureDeviceInput?
@@ -26,8 +26,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     fileprivate var silentCaptureImageCompletion: ((_ image: UIImage?, _ metadata: [String: Any]?) -> Void)? // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
 
     private let observers: NSHashTable<SimpleCameraObservable> = NSHashTable.weakObjects()
-    fileprivate let videoOutputObservers: NSHashTable<SimpleCameraVideoOutputObservable> = NSHashTable.weakObjects()
-    fileprivate let audioOutputObservers: NSHashTable<SimpleCameraAudioOutputObservable> = NSHashTable.weakObjects()
+    fileprivate let videoDataOutputObservers: NSHashTable<SimpleCameraVideoDataOutputObservable> = NSHashTable.weakObjects()
+    fileprivate let audioDataOutputObservers: NSHashTable<SimpleCameraAudioDataOutputObservable> = NSHashTable.weakObjects()
 
     private weak var captureVideoPreviewView: AVCaptureVideoPreviewView?
 
@@ -97,7 +97,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
             captureSession.beginConfiguration() // defer より前の段階で commit したい
 
-            captureSession.removeOutput(fileOutput)
+            captureSession.removeOutput(movieFileOutput)
             if let audioDeviceInput = audioDeviceInput {
                 captureSession.removeInput(audioDeviceInput)
             }
@@ -165,10 +165,10 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             }
 
             /*
-            // ここで fileOutput を addOutput してしまうと videoOutput に何も流れてこなくなるのでダメ。
+            // ここで movieFileOutput を addOutput してしまうと videoDataOutput に何も流れてこなくなるのでダメ。
             // 一瞬暗くなるけど録画直前に addOutput するしかなさそう。
-            if captureSession.canAddOutput(fileOutput) {
-                captureSession.addOutput(fileOutput)
+            if captureSession.canAddOutput(movieFileOutput) {
+                captureSession.addOutput(movieFileOutput)
             }
              */
 
@@ -299,7 +299,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
         // Block を保持しておいて、次に AVCaptureVideoDataOutputSampleBufferDelegate で呼ばれた時に UIImage 作って返す。
         isSilentCapturingImage = true
-        videoOutputQueue.sync {
+        videoDataOutputQueue.sync {
             silentCaptureImageCompletion = completion
         }
     }
@@ -321,7 +321,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         guard url.isFileURL else {
             return false
         }
-        guard captureSession.canAddOutput(fileOutput) else {
+        guard captureSession.canAddOutput(movieFileOutput) else {
             return false
         }
         sessionQueue.sync {
@@ -329,30 +329,30 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             defer {
                 captureSession.commitConfiguration()
             }
-            // fileOutput を使うと自動で videoOutput と audioOutput へのデータの流れが止まるのでこうなってる。
-            captureSession.removeOutput(videoOutput)
-            captureSession.removeOutput(audioOutput)
-            captureSession.addOutput(fileOutput)
+            // movieFileOutput を使うと自動で videoDataOutput と audioDataOutput へのデータの流れが止まるのでこうなってる。
+            captureSession.removeOutput(videoDataOutput)
+            captureSession.removeOutput(audioDataOutput)
+            captureSession.addOutput(movieFileOutput)
             let videoOrientation: AVCaptureVideoOrientation
             if self.isFollowDeviceOrientationWhenCapture {
                 videoOrientation = OrientationDetector.shared.captureVideoOrientation
             } else {
                 videoOrientation = .portrait
             }
-            fileOutput.connection(with: .video)?.videoOrientation = videoOrientation
+            movieFileOutput.connection(with: .video)?.videoOrientation = videoOrientation
         }
 
         isRecordingMovie = true
-        // videoInput, audioInput, fileOutput を captureSession に足したり消したりしてる関係で、デバイスの初期化が走ってしまい少し暗くなるので気持ちの待ちを入れる。
+        // videoDataOutput, audioDataOutput, movieFileOutput を captureSession に足したり消したりしてる関係で、デバイスの初期化が走ってしまい少し暗くなるので気持ちの待ちを入れる。
         sessionQueue.asyncAfter(deadline: .now() + 0.3) {
-            self.fileOutput.startRecording(to: url, recordingDelegate: self)
+            self.movieFileOutput.startRecording(to: url, recordingDelegate: self)
         }
         return true
     }
 
     public func stopRecordMovie() {
         sessionQueue.async {
-            self.fileOutput.stopRecording()
+            self.movieFileOutput.stopRecording()
         }
     }
 
@@ -545,7 +545,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // let videoOrientation = AVCaptureVideoOrientation(interfaceOrientation: UIApplication.shared.statusBarOrientation) ?? .portrait
             // とりあえず portrait に戻す
             let videoOrientation = AVCaptureVideoOrientation.portrait
-            videoOutput.connection(with: .video)?.videoOrientation = videoOrientation
+            videoDataOutput.connection(with: .video)?.videoOrientation = videoOrientation
         }
 
         if switchSucceed {
@@ -618,32 +618,32 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
     }
 
-    // MARK: Manage VideoOutput Observer
+    // MARK: Manage VideoDataOutput Observer
 
-    public func add(videoOutputObserver: SimpleCameraVideoOutputObservable) {
-        if !videoOutputObservers.contains(videoOutputObserver) {
-            videoOutputObservers.add(videoOutputObserver)
+    public func add(videoDataOutputObserver: SimpleCameraVideoDataOutputObservable) {
+        if !videoDataOutputObservers.contains(videoDataOutputObserver) {
+            videoDataOutputObservers.add(videoDataOutputObserver)
         }
     }
 
-    public func remove(videoOutputObserver: SimpleCameraVideoOutputObservable) {
-        if videoOutputObservers.contains(videoOutputObserver) {
-            videoOutputObservers.remove(videoOutputObserver)
+    public func remove(videoDataOutputObserver: SimpleCameraVideoDataOutputObservable) {
+        if videoDataOutputObservers.contains(videoDataOutputObserver) {
+            videoDataOutputObservers.remove(videoDataOutputObserver)
         }
     }
 
-    // MARK: Manage AudioOutput Observers
+    // MARK: Manage AudioDataOutput Observers
 
-    public func add(audioOutputObserver: SimpleCameraAudioOutputObservable) {
-        if !audioOutputObservers.contains(audioOutputObserver) {
-            audioOutputObservers.add(audioOutputObserver)
+    public func add(audioDataOutputObserver: SimpleCameraAudioDataOutputObservable) {
+        if !audioDataOutputObservers.contains(audioDataOutputObserver) {
+            audioDataOutputObservers.add(audioDataOutputObserver)
         }
 
     }
 
-    public func remove(audioOutputObserver: SimpleCameraAudioOutputObservable) {
-        if audioOutputObservers.contains(audioOutputObserver) {
-            audioOutputObservers.remove(audioOutputObserver)
+    public func remove(audioDataOutputObserver: SimpleCameraAudioDataOutputObservable) {
+        if audioDataOutputObservers.contains(audioDataOutputObserver) {
+            audioDataOutputObservers.remove(audioDataOutputObserver)
         }
     }
 
@@ -701,7 +701,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 captureSession.addOutput(stillImageOutput)
             }
 
-            // videoOutput を調整して captureSession に放り込む
+            // videoDataOutput を調整して captureSession に放り込む
             // kCVPixelBufferPixelFormatTypeKey の部分だけど、
             // Available pixel format types on this platform are (
             //     420v, // たぶん kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
@@ -710,16 +710,16 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // ).
             // とのこと。
             // iPhone 4s でのみ再現するんだけど、マジで何も言わずデバッガにも引っ掛からずにアプリが落ちるので
-            // cameraVideoInputDevice と videoOutput のフォーマットを 420v の統一してみたところ落ちなくなった。
-            videoOutput.videoSettings = [String(kCVPixelBufferPixelFormatTypeKey): NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange as UInt32)]
-            videoOutput.setSampleBufferDelegate(self, queue: videoOutputQueue)
-            if captureSession.canAddOutput(videoOutput) {
-                captureSession.addOutput(videoOutput)
+            // cameraVideoInputDevice と videoDataOutput のフォーマットを 420v の統一してみたところ落ちなくなった。
+            videoDataOutput.videoSettings = [String(kCVPixelBufferPixelFormatTypeKey): NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange as UInt32)]
+            videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
+            if captureSession.canAddOutput(videoDataOutput) {
+                captureSession.addOutput(videoDataOutput)
             }
 
-            audioOutput.setSampleBufferDelegate(self, queue: videoOutputQueue)
-            if captureSession.canAddOutput(audioOutput) {
-                captureSession.addOutput(audioOutput)
+            audioDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
+            if captureSession.canAddOutput(audioDataOutput) {
+                captureSession.addOutput(audioDataOutput)
             }
 
             // backCamera を captureSession に放り込む
@@ -740,9 +740,9 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 }
             }
 
-            // stillImageOutput と videoOutput の videoOrientation を InterfaceOrientation に揃えるか縦にしておく。
+            // stillImageOutput と videoDataOutput の videoOrientation を InterfaceOrientation に揃えるか縦にしておく。
             // captureSession に addInput した後じゃないと connection は nil なので videoOrientation を取ろうとすると nil アクセスで死にます。
-            // デフォルトでは stillImageOutput が 1 (portrait) で videoOutput が 3 (landscapeRight)
+            // デフォルトでは stillImageOutput が 1 (portrait) で videoDataOutput が 3 (landscapeRight)
             // let videoOrientation = AVCaptureVideoOrientation(interfaceOrientation: UIApplication.shared.statusBarOrientation) ?? .portrait
             // とりあえず portrait に戻す
             let videoOrientation = AVCaptureVideoOrientation.portrait
@@ -752,11 +752,11 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 }
                 stillImageOutputConnection.videoScaleAndCropFactor = 1.0
             }
-            if let videoOutputConnection = videoOutput.connection(with: AVMediaType.video) {
-                if videoOutputConnection.isVideoOrientationSupported {
-                    videoOutputConnection.videoOrientation = videoOrientation
+            if let videoDataOutputConnection = videoDataOutput.connection(with: AVMediaType.video) {
+                if videoDataOutputConnection.isVideoOrientationSupported {
+                    videoDataOutputConnection.videoOrientation = videoOrientation
                 }
-                videoOutputConnection.videoScaleAndCropFactor = 1.0
+                videoDataOutputConnection.videoScaleAndCropFactor = 1.0
             }
         }
 
@@ -775,7 +775,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             return
         }
 
-        videoOutputQueue.sync {
+        videoDataOutputQueue.sync {
             silentCaptureImageCompletion = nil
             isSilentCapturingImage = false
         }
@@ -1048,7 +1048,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
 extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
 
-    public var preferredUIImageOrientationForVideoOutput: UIImage.Orientation {
+    public var preferredUIImageOrientationForVideoDataOutput: UIImage.Orientation {
         guard isRunning else {
             return .up
         }
@@ -1058,7 +1058,7 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
         let imageOrientation: UIImage.Orientation
         let captureVideoOrientation = !isFollowDeviceOrientationWhenCapture ? .portrait : OrientationDetector.shared.captureVideoOrientation
         let i = UIImage.Orientation(captureVideoOrientation: captureVideoOrientation)
-        if let connection = videoOutput.connection(with: .video), connection.isFrontCameraDevice {
+        if let connection = videoDataOutput.connection(with: .video), connection.isFrontCameraDevice {
             // Front Camera のときはちょっとややこしい
             imageOrientation = isMirroredImageIfFrontCamera ? i.swapLeftRight.mirrored : i.swapLeftRight
         } else {
@@ -1070,11 +1070,11 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
 
     // AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate で同じ名前のメソッドという…。
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if output == videoOutput {
+        if output == videoDataOutput {
             // 無音カメラの実装
             if let silentCaptureImageCompletion = silentCaptureImageCompletion {
                 self.silentCaptureImageCompletion = nil
-                let image = createUIImage(from: sampleBuffer, limitSize: captureLimitSize, imageOrientation: preferredUIImageOrientationForVideoOutput)
+                let image = createUIImage(from: sampleBuffer, limitSize: captureLimitSize, imageOrientation: preferredUIImageOrientationForVideoDataOutput)
                 let metadata = CMCopyDictionaryOfAttachments(allocator: nil, target: sampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate) as? [String: Any]
                 isSilentCapturingImage = false
                 onMainThreadAsync {
@@ -1082,24 +1082,24 @@ extension SimpleCamera: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureA
                 }
             }
 
-            // videoOutputObservers
-            for observer in videoOutputObservers.allObjects {
-                observer.simpleCameraVideoOutputObserve(captureOutput: output, didOutput: sampleBuffer, from: connection)
+            // videoDataOutputObservers
+            for observer in videoDataOutputObservers.allObjects {
+                observer.simpleCameraVideoDataOutputObserve(captureOutput: output, didOutput: sampleBuffer, from: connection)
             }
-        } else if output == audioOutput {
-            // audioOutputObservers
-            for observer in audioOutputObservers.allObjects {
-                observer.simpleCameraAudioOutputObserve(captureOutput: output, didOutput: sampleBuffer, from: connection)
+        } else if output == audioDataOutput {
+            // audioDataOutputObservers
+            for observer in audioDataOutputObservers.allObjects {
+                observer.simpleCameraAudioDataOutputObserve(captureOutput: output, didOutput: sampleBuffer, from: connection)
             }
         }
     }
 
     public func captureOutput(_ captureOutput: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard captureOutput == videoOutput else {
+        guard captureOutput == videoDataOutput else {
             return
         }
-        for observer in videoOutputObservers.allObjects {
-            observer.simpleCameraVideoOutputObserve(captureOutput: captureOutput, didDrop: sampleBuffer, from: connection)
+        for observer in videoDataOutputObservers.allObjects {
+            observer.simpleCameraVideoDataOutputObserve(captureOutput: captureOutput, didDrop: sampleBuffer, from: connection)
         }
     }
 
@@ -1118,18 +1118,18 @@ extension SimpleCamera: AVCaptureFileOutputRecordingDelegate {
             defer {
                 self.captureSession.commitConfiguration()
             }
-            // fileOutput を使うと自動で videoOutput と audioOutput へのデータの流れが止まるのでこうなってる。
-            self.captureSession.removeOutput(self.fileOutput)
-            if self.captureSession.canAddOutput(self.videoOutput) {
-                self.captureSession.addOutput(self.videoOutput)
+            // movieFileOutput を使うと自動で videoDataOutput と audioDataOutput へのデータの流れが止まるのでこうなってる。
+            self.captureSession.removeOutput(self.movieFileOutput)
+            if self.captureSession.canAddOutput(self.videoDataOutput) {
+                self.captureSession.addOutput(self.videoDataOutput)
             }
-            if self.captureSession.canAddOutput(self.audioOutput) {
-                self.captureSession.addOutput(self.audioOutput)
+            if self.captureSession.canAddOutput(self.audioDataOutput) {
+                self.captureSession.addOutput(self.audioDataOutput)
             }
             // let videoOrientation = AVCaptureVideoOrientation(interfaceOrientation: UIApplication.shared.statusBarOrientation) ?? .portrait
             // とりあえず portrait に戻す
             let videoOrientation = AVCaptureVideoOrientation.portrait
-            self.videoOutput.connection(with: .video)?.videoOrientation = videoOrientation
+            self.videoDataOutput.connection(with: .video)?.videoOrientation = videoOrientation
         }
     }
 
