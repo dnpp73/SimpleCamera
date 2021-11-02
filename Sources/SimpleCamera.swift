@@ -16,6 +16,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
 
     fileprivate let captureSession = AVCaptureSession()
     private let stillImageOutput = AVCaptureStillImageOutput()
+    private let photoOutput = AVCapturePhotoOutput()
     fileprivate let videoDataOutput = AVCaptureVideoDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
     fileprivate let audioDataOutput = AVCaptureAudioDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
     fileprivate let movieFileOutput = AVCaptureMovieFileOutput()
@@ -23,6 +24,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     private var frontCameraVideoInput: AVCaptureDeviceInput?
     private var backCameraVideoInput: AVCaptureDeviceInput?
     private var audioDeviceInput: AVCaptureDeviceInput?
+
+    fileprivate var isPhotoCapturingImage: Bool = false
 
     fileprivate var isSilentCapturingImage: Bool = false
     fileprivate var silentCaptureImageCompletion: ((_ image: UIImage?, _ metadata: [String: Any]?) -> Void)? // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
@@ -208,10 +211,38 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     // MARK: Capture Image
 
     public var isCapturingImage: Bool {
-        stillImageOutput.isCapturingStillImage || isSilentCapturingImage
+        stillImageOutput.isCapturingStillImage || isSilentCapturingImage || isPhotoCapturingImage
     }
 
     public var captureLimitSize: CGSize = .zero
+
+    public func capturePhotoImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void) {
+        guard isConfigured else {
+            completion(nil, nil)
+            return
+        }
+        guard isRecordingMovie == false else {
+            completion(nil, nil)
+            return
+        }
+        guard captureSession.isRunning else {
+            completion(nil, nil)
+            return
+        }
+
+        if isSilentCapturingImage {
+            // 連打などで前のやつが処理中な場合
+            completion(nil, nil)
+            return
+        }
+
+        #warning("書く")
+
+        // captureLimitSize も見る
+        // isPhotoCapturingImage: Bool も弄る
+
+//        self.photoOutput.capturePhoto(with: <#T##AVCapturePhotoSettings#>, delegate: <#T##AVCapturePhotoCaptureDelegate#>)
+    }
 
     public func captureStillImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void) {
         guard isConfigured else {
@@ -767,6 +798,11 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 captureSession.addOutput(stillImageOutput)
             }
 
+            #warning("書く")
+            if captureSession.canAddOutput(photoOutput) {
+                captureSession.addOutput(photoOutput)
+            }
+
             // videoDataOutput を調整して captureSession に放り込む
             // kCVPixelBufferPixelFormatTypeKey の部分だけど、
             // Available pixel format types on this platform are (
@@ -844,6 +880,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         videoDataOutputQueue.sync {
             silentCaptureImageCompletion = nil
             isSilentCapturingImage = false
+            isPhotoCapturingImage = false
         }
         sessionQueue.sync {
             removeObservers()
