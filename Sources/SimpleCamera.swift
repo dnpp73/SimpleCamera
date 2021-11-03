@@ -239,22 +239,37 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             return
         }
 
-        #warning("書く")
-
-        // captureLimitSize も見る
-        // isPhotoCapturingImage: Bool も弄る
-
-        photoCaptureImageCompletion = completion
-
         let settings = AVCapturePhotoSettings()
-//        settings.flashMode = .auto
-//        settings.isHighResolutionPhotoEnabled = false
+        // settings.flashMode = .auto
+        // settings.isHighResolutionPhotoEnabled = false
 
         isPhotoCapturingImage = true
+        photoCaptureImageCompletion = completion
 
+        /*
+        // AVCaptureStillImageOutput の captureStillImageAsynchronously であれば撮影直前に connection の videoOrientation を弄っても問題なかったが
+        // AVCapturePhotoOutput ではどうやら弄っても効かない模様。
+        let videoOrientation: AVCaptureVideoOrientation
+        if self.isFollowDeviceOrientationWhenCapture {
+            videoOrientation = OrientationDetector.shared.captureVideoOrientation
+        } else {
+            videoOrientation = .portrait
+        }
+        sessionQueue.async {
+            if let photoOutputConnection = self.photoOutput.connection(with: AVMediaType.video) {
+                if photoOutputConnection.isVideoOrientationSupported {
+                    self.captureSession.beginConfiguration()
+                    photoOutputConnection.videoOrientation = videoOrientation
+                    self.captureSession.commitConfiguration() // defer より前のタイミングで commit したい
+                }
+            }
+            self.photoOutput.capturePhoto(with: settings, delegate: self)
+        }
+         */
         photoOutput.capturePhoto(with: settings, delegate: self)
     }
 
+    @available(*, deprecated, renamed: "capturePhotoImageAsynchronously")
     public func captureStillImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void) {
         capturePhotoImageAsynchronously(completion: completion)
     }
@@ -809,15 +824,6 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 captureSession.commitConfiguration()
             }
 
-            /*
-            // captureSession に stillImageOutput を放り込む
-            stillImageOutput.outputSettings = [ AVVideoCodecKey: AVVideoCodecType.jpeg ]
-            if captureSession.canAddOutput(stillImageOutput) {
-                captureSession.addOutput(stillImageOutput)
-            }
-             */
-
-            #warning("書く")
             if captureSession.canAddOutput(photoOutput) {
                 captureSession.addOutput(photoOutput)
                 photoOutput.isLivePhotoCaptureEnabled = false
@@ -868,14 +874,6 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // let videoOrientation = AVCaptureVideoOrientation(interfaceOrientation: UIApplication.shared.statusBarOrientation) ?? .portrait
             // とりあえず portrait に戻す
             let videoOrientation = AVCaptureVideoOrientation.portrait
-            /*
-            if let stillImageOutputConnection = stillImageOutput.connection(with: AVMediaType.video) {
-                if stillImageOutputConnection.isVideoOrientationSupported {
-                    stillImageOutputConnection.videoOrientation = videoOrientation
-                }
-                stillImageOutputConnection.videoScaleAndCropFactor = 1.0
-            }
-             */
             if let photoOutputConnection = photoOutput.connection(with: AVMediaType.video) {
                 if photoOutputConnection.isVideoOrientationSupported {
                     photoOutputConnection.videoOrientation = videoOrientation
@@ -1275,49 +1273,74 @@ extension SimpleCamera: AVCapturePhotoCaptureDelegate {
     // Monitoring Capture Progress
 
     public func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        print(#function)
-        print(resolvedSettings)
     }
 
     public func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        print(#function)
-        print(resolvedSettings)
     }
 
     public func photoOutput(_ output: AVCapturePhotoOutput, didCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        print(#function)
-        print(resolvedSettings)
     }
 
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
-        print(#function)
-        print(resolvedSettings)
-        print(error ?? "")
-        #warning("ここ？")
         isPhotoCapturingImage = false
     }
 
     // Receiving Capture Results
 
+    private var preferredUIImageOrientationForPhotoOutput: UIImage.Orientation {
+        guard isRunning else {
+            return .up
+        }
+
+        // AVCaptureStillImageOutput の captureStillImageAsynchronously であれば撮影直前に connection の videoOrientation を弄っても問題なかったが
+        // AVCapturePhotoOutput ではどうやら弄っても効かない模様なのでここでなんとかする。
+        let imageOrientation: UIImage.Orientation
+        let captureVideoOrientation = !isFollowDeviceOrientationWhenCapture ? .portrait : OrientationDetector.shared.captureVideoOrientation
+        let i = UIImage.Orientation(captureVideoOrientation: captureVideoOrientation)
+        if let connection = photoOutput.connection(with: .video), connection.isFrontCameraDevice {
+            // Front Camera のときはちょっとややこしい
+            imageOrientation = isMirroredImageIfFrontCamera ? i.swapLeftRight.mirrored.rotateLeft : i.swapLeftRight.rotateRight
+        } else {
+            // Back Camera のときはそのまま使う
+            imageOrientation = i.rotateRight
+        }
+        return imageOrientation
+    }
+
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        print(#function)
-        print(photo)
-        print(error ?? "")
         guard let photoCaptureImageCompletion = photoCaptureImageCompletion else {
             return
         }
         self.photoCaptureImageCompletion = nil
         if let _ = error {
-            photoCaptureImageCompletion(nil, nil)
+            onMainThreadAsync {
+                photoCaptureImageCompletion(nil, nil)
+            }
             return
         }
         guard let cgImage = photo.cgImageRepresentation() else {
-            photoCaptureImageCompletion(nil, nil)
+            onMainThreadAsync {
+                photoCaptureImageCompletion(nil, nil)
+            }
             return
         }
-        #warning("orientation 見るのと metadata 見る")
-        let image = UIImage(cgImage: cgImage, scale: 1.0, orientation: .up)
-        photoCaptureImageCompletion(image, nil)
+
+         let rawImage = UIImage(cgImage: cgImage, scale: 1.0, orientation: preferredUIImageOrientationForPhotoOutput)
+        let scaledImage: UIImage
+        if self.captureLimitSize == .zero {
+            scaledImage = rawImage
+        } else {
+            guard let c = CIImage(image: rawImage), let i = createUIImage(from: c, limitSize: self.captureLimitSize, imageOrientation: rawImage.imageOrientation) else {
+                onMainThreadAsync {
+                    photoCaptureImageCompletion(nil, nil)
+                }
+                return
+            }
+            scaledImage = i
+        }
+        onMainThreadAsync {
+            photoCaptureImageCompletion(scaledImage, photo.metadata)
+        }
     }
 
     /*
