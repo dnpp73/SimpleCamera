@@ -15,7 +15,6 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     private let videoDataOutputQueue = DispatchQueue(label: "org.dnpp.SimpleCamera.VideoDataOutput.delegateQueue")
 
     fileprivate let captureSession = AVCaptureSession()
-    private let stillImageOutput = AVCaptureStillImageOutput()
     private let photoOutput = AVCapturePhotoOutput()
     fileprivate let videoDataOutput = AVCaptureVideoDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
     fileprivate let audioDataOutput = AVCaptureAudioDataOutput() // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
@@ -26,8 +25,8 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     private var audioDeviceInput: AVCaptureDeviceInput?
 
     fileprivate var isPhotoCapturingImage: Bool = false
-
     fileprivate var isSilentCapturingImage: Bool = false
+    fileprivate var photoCaptureImageCompletion: ((_ image: UIImage?, _ metadata: [String: Any]?) -> Void)? // extension で使っているため fileprivate
     fileprivate var silentCaptureImageCompletion: ((_ image: UIImage?, _ metadata: [String: Any]?) -> Void)? // extension の AVCaptureVideoDataOutputSampleBufferDelegate 内で使っているため fileprivate
 
     private let observers: NSHashTable<SimpleCameraObservable> = NSHashTable.weakObjects()
@@ -211,7 +210,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     // MARK: Capture Image
 
     public var isCapturingImage: Bool {
-        stillImageOutput.isCapturingStillImage || isSilentCapturingImage || isPhotoCapturingImage
+        isSilentCapturingImage || isPhotoCapturingImage
     }
 
     public var captureLimitSize: CGSize = .zero
@@ -229,6 +228,10 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             completion(nil, nil)
             return
         }
+        if isPhotoCapturingImage {
+            completion(nil, nil)
+            return
+        }
 
         if isSilentCapturingImage {
             // 連打などで前のやつが処理中な場合
@@ -241,9 +244,21 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         // captureLimitSize も見る
         // isPhotoCapturingImage: Bool も弄る
 
-//        self.photoOutput.capturePhoto(with: <#T##AVCapturePhotoSettings#>, delegate: <#T##AVCapturePhotoCaptureDelegate#>)
+        photoCaptureImageCompletion = completion
+
+        let settings = AVCapturePhotoSettings()
+//        settings.flashMode = .auto
+//        settings.isHighResolutionPhotoEnabled = false
+
+        isPhotoCapturingImage = true
+
+        photoOutput.capturePhoto(with: settings, delegate: self)
     }
 
+    public func captureStillImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void) {
+        capturePhotoImageAsynchronously(completion: completion)
+    }
+    /*
     public func captureStillImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void) {
         guard isConfigured else {
             completion(nil, nil)
@@ -262,16 +277,17 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             return
         }
 
+        let videoOrientation: AVCaptureVideoOrientation
+        if self.isFollowDeviceOrientationWhenCapture {
+            videoOrientation = OrientationDetector.shared.captureVideoOrientation
+        } else {
+            videoOrientation = .portrait
+        }
+
         sessionQueue.async {
             let stillImageOutputCaptureConnection: AVCaptureConnection = self.stillImageOutput.connection(with: .video)! // swiftlint:disable:this force_unwrapping
             // captureStillImageAsynchronously であれば撮影直前に connection の videoOrientation を弄っても問題なさそう
             self.captureSession.beginConfiguration()
-            let videoOrientation: AVCaptureVideoOrientation
-            if self.isFollowDeviceOrientationWhenCapture {
-                videoOrientation = OrientationDetector.shared.captureVideoOrientation
-            } else {
-                videoOrientation = .portrait
-            }
             stillImageOutputCaptureConnection.videoOrientation = videoOrientation
             self.captureSession.commitConfiguration() // defer より前のタイミングで commit したい
 
@@ -312,6 +328,7 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
         }
 
     }
+     */
 
     public func captureSilentImageAsynchronously(completion: @escaping (_ image: UIImage?, _ metadata: [String: Any]?) -> Void) {
         guard isConfigured else {
@@ -792,15 +809,18 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
                 captureSession.commitConfiguration()
             }
 
+            /*
             // captureSession に stillImageOutput を放り込む
             stillImageOutput.outputSettings = [ AVVideoCodecKey: AVVideoCodecType.jpeg ]
             if captureSession.canAddOutput(stillImageOutput) {
                 captureSession.addOutput(stillImageOutput)
             }
+             */
 
             #warning("書く")
             if captureSession.canAddOutput(photoOutput) {
                 captureSession.addOutput(photoOutput)
+                photoOutput.isLivePhotoCaptureEnabled = false
             }
 
             // videoDataOutput を調整して captureSession に放り込む
@@ -848,11 +868,19 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
             // let videoOrientation = AVCaptureVideoOrientation(interfaceOrientation: UIApplication.shared.statusBarOrientation) ?? .portrait
             // とりあえず portrait に戻す
             let videoOrientation = AVCaptureVideoOrientation.portrait
+            /*
             if let stillImageOutputConnection = stillImageOutput.connection(with: AVMediaType.video) {
                 if stillImageOutputConnection.isVideoOrientationSupported {
                     stillImageOutputConnection.videoOrientation = videoOrientation
                 }
                 stillImageOutputConnection.videoScaleAndCropFactor = 1.0
+            }
+             */
+            if let photoOutputConnection = photoOutput.connection(with: AVMediaType.video) {
+                if photoOutputConnection.isVideoOrientationSupported {
+                    photoOutputConnection.videoOrientation = videoOrientation
+                }
+                photoOutputConnection.videoScaleAndCropFactor = 1.0
             }
             if let videoDataOutputConnection = videoDataOutput.connection(with: AVMediaType.video) {
                 if videoDataOutputConnection.isVideoOrientationSupported {
@@ -1239,6 +1267,67 @@ extension SimpleCamera: AVCaptureFileOutputRecordingDelegate {
             self.videoDataOutput.connection(with: .video)?.videoOrientation = videoOrientation
         }
     }
+
+}
+
+extension SimpleCamera: AVCapturePhotoCaptureDelegate {
+
+    // Monitoring Capture Progress
+
+    public func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
+        print(#function)
+        print(resolvedSettings)
+    }
+
+    public func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
+        print(#function)
+        print(resolvedSettings)
+    }
+
+    public func photoOutput(_ output: AVCapturePhotoOutput, didCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
+        print(#function)
+        print(resolvedSettings)
+    }
+
+    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+        print(#function)
+        print(resolvedSettings)
+        print(error ?? "")
+        #warning("ここ？")
+        isPhotoCapturingImage = false
+    }
+
+    // Receiving Capture Results
+
+    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        print(#function)
+        print(photo)
+        print(error ?? "")
+        guard let photoCaptureImageCompletion = photoCaptureImageCompletion else {
+            return
+        }
+        self.photoCaptureImageCompletion = nil
+        if let _ = error {
+            photoCaptureImageCompletion(nil, nil)
+            return
+        }
+        guard let cgImage = photo.cgImageRepresentation() else {
+            photoCaptureImageCompletion(nil, nil)
+            return
+        }
+        #warning("orientation 見るのと metadata 見る")
+        let image = UIImage(cgImage: cgImage, scale: 1.0, orientation: .up)
+        photoCaptureImageCompletion(image, nil)
+    }
+
+    /*
+    // LivePhoto は使わないことにする
+    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
+    }
+
+    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration: CMTime, photoDisplayTime: CMTime, resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+    }
+     */
 
 }
 
