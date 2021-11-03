@@ -227,7 +227,6 @@
 				TargetAttributes = {
 					EA5C8B6B1EA7357E00E5E016 = {
 						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = 3XM25R8KKX;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
@@ -435,6 +434,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
