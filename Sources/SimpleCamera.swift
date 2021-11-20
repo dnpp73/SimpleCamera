@@ -60,17 +60,20 @@ public final class SimpleCamera: NSObject, SimpleCameraInterface {
     }
 
     public func startRunning() {
-        configure() // この実行でカメラの許可ダイアログが出る
-
-        guard isConfigured else {
-            return
-        }
-        if !isRunning {
-            OrientationDetector.shared.startSensor()
-            sessionQueue.async {
-                self.captureSession.startRunning()
-                self.resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
-                self.resetFocusAndExposure()
+        DispatchQueue.global().async {
+            self.configure() // この実行でカメラの許可ダイアログが出る
+            guard self.isConfigured else {
+                return
+            }
+            if !self.isRunning {
+                DispatchQueue.main.async {
+                    OrientationDetector.shared.startSensor()
+                }
+                self.sessionQueue.async {
+                    self.captureSession.startRunning()
+                    self.resetZoomFactor(sync: false) // true にしたり zoomFactor の setter に入れるとデッドロックするので注意
+                    self.resetFocusAndExposure()
+                }
             }
         }
     }
